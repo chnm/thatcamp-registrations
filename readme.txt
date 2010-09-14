@@ -1,5 +1,5 @@
 === THATCamp Registrations ===
-Contributors: chnm, jeremyboggs
+Contributors: jeremyboggs
 Donate link: http://chnm.gmu.edu/
 Tags: conferences, registration, users
 Requires at least: 3.0
@@ -30,3 +30,7 @@ Documentation can be found at [THATCamp Plugins](http://thatcamp.org/plugins "TH
 
 = 1.0-alpha =
 * Initial public release
+
+== Credits ==
+
+Funding to create these plugins was generously provided by the Mellon Foundation as part of the 2010-2012 grant project "Digital Methods Training at Scale: Leveraging THATCamp Through a Regional System."
