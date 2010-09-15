@@ -57,7 +57,7 @@ class Thatcamp_Registrations_Loader {
 
 	function includes() {
 		if ( is_admin() ) {
-			require( dirname( __FILE__ ) . '/includes/class-admin-main.php' );
+			require( dirname( __FILE__ ) . '/includes/class-admin.php' );
         }
 	}
 	
