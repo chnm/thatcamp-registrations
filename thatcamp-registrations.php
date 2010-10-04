@@ -30,19 +30,18 @@ if ( !class_exists( 'Thatcamp_Registrations_Loader' ) ) :
 class Thatcamp_Registrations_Loader {
 
 	/**
-	* The main Anthologize loader. Hooks our stuff into WP
+	* The main loader. The heavyweight. Hooks our stuff into WP
 	*/
-	function thatcamp_registrations_loader () {
+	function thatcamp_registrations_loader() {
 
 		add_action( 'init', array ( $this, 'init' ) );
 		add_action( 'plugins_loaded', array ( $this, 'loaded' ) );
-		
-		// Include the necessary files
+		add_action( 'wpmu_new_blog', array ( $this, 'new_blog' ) ); 		
 		add_action( 'thatcamp_registrations_loaded', array ( $this, 'includes' ) );
-
-		// Attach textdomain for localization
 		add_action( 'thatcamp_registrations_init', array ( $this, 'textdomain' ) );
-
+		
+		register_activation_hook( __FILE__, array( $this, 'activation' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'deactivation' ) );
 	}
 
 	// Let plugins know that we're initializing
@@ -56,8 +55,10 @@ class Thatcamp_Registrations_Loader {
 	}
 
 	function includes() {
+	    require( dirname( __FILE__ ) . '/thatcamp-registrations-functions.php' );
+	    require( dirname( __FILE__ ) . '/thatcamp-registrations-public-registration.php' );
 		if ( is_admin() ) {
-			require( dirname( __FILE__ ) . '/includes/class-admin.php' );
+			require( dirname( __FILE__ ) . '/thatcamp-registrations-admin.php' );
         }
 	}
 	
@@ -66,23 +67,73 @@ class Thatcamp_Registrations_Loader {
 	function textdomain() {
 		$locale = get_locale();
 
-		// First look in wp-content/thatcamp-registration-files/languages, where custom language files will not be overwritten by Anthologize upgrades. Then check the packaged language file directory.
-		$mofile_custom = WP_CONTENT_DIR . "/thatcamp-registration-files/languages/thatcamp-registration-$locale.mo";
-		$mofile_packaged = WP_PLUGIN_DIR . "/thatcamp-registration/languages/thatcamp-registration-$locale.mo";
+		// First look in wp-content/thatcamp-registration-files/languages, where custom language files will not be overwritten by THATCamp Registrations upgrades. Then check the packaged language file directory.
+		$mofile_custom = WP_CONTENT_DIR . "/thatcamp-registrations-files/languages/thatcamp-registration-$locale.mo";
+		$mofile_packaged = WP_PLUGIN_DIR . "/thatcamp-registrations/languages/thatcamp-registration-$locale.mo";
 
     	if ( file_exists( $mofile_custom ) ) {
-      		load_textdomain( 'thatcamp-registration', $mofile_custom );
+      		load_textdomain( 'thatcamp-registrations', $mofile_custom );
       		return;
       	} else if ( file_exists( $mofile_packaged ) ) {
-      		load_textdomain( 'thatcamp-registration', $mofile_packaged );
+      		load_textdomain( 'thatcamp-registrations', $mofile_packaged );
       		return;
       	}
 	}
 
-    function add_tables() {
-        
-    }
+    function activation() {
+        global $wpdb;
+    	if (function_exists('is_multisite') && is_multisite()) {
+    		// check if it is a network activation - if so, run the activation function for each blog id
+    		if (isset($_GET['networkwide']) && ($_GET['networkwide'] == 1)) {
+    	        $old_blog = $wpdb->blogid;
+    			// Get all blog ids
+    			$blogids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM $wpdb->blogs"));
+    			foreach ($blogids as $blog_id) {
+    				switch_to_blog($blog_id);
+    				$this->_create_table();
+    			}
+    			switch_to_blog($old_blog);
+    			return;
+    		}	
+    	} 
+    	$this->_create_table();
+        // First-Run-Only parameters: Check if schedule table exists:
 
+    }
+    
+    function _create_table() {
+    	global $wpdb;
+        $table_name = $wpdb->prefix . 'thatcamp_registrations';
+    	if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name) {
+            if (!empty ($wpdb->charset))
+        		$charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
+        	if (!empty ($wpdb->collate))
+        		$charset_collate .= " COLLATE {$wpdb->collate}";
+        		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+        		  	id bigint(20) NOT NULL AUTO_INCREMENT,
+        		  	applicant text NOT NULL,
+        			application_text text NOT NULL,
+        			bootcamp_session text DEFAULT NULL,
+        			additional_information text DEFAULT NULL,
+        		  	UNIQUE KEY id (id)
+        		) {$charset_collate};";
+
+        	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        	dbDelta($sql);        
+        }
+    }
+    
+    function new_blog($newBlogId) {
+    	global $wpdb;
+    	if (is_plugin_active_for_network('thatcamp-registrations/thatcamp-registrations.php')) {
+    		$oldBlogId = $wpdb->blogid;
+    		switch_to_blog($newBlogId);
+    		$this->_create_table();
+    		switch_to_blog($oldBlogId);
+    	}
+    }
+    
+    function deactivation() {}
 }
 
 endif; // class exists
