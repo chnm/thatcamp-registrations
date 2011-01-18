@@ -12,117 +12,107 @@ class Thatcamp_Registrations_Public_Registration {
         $this->options = get_option('thatcamp_registrations_options');  
         $this->current_user = wp_get_current_user();
     }
-    
-    //
+        
     function shortcode($attr) {
-        
-        $html = '';
-        
-        // If we're processing $POST data without a problem, let's save the registration and send an email.
-        if ( $this->check_form() ) {
-            $html .= $this->save_registration();
-
-        // Otherwise, let's build us a form
+        if (thatcamp_registrations_option('open_registration') == 1) {
+            return $this->display_registration();
         } else {
-            $html .= $this->display_registration();
+            return 'Registration is closed.';
         }
-        
-        return $html; 
     }
     
-    // This should check the form for required POST data
-    function check_form() {
-        if ( !empty( $_POST['application_text'] ) ) {
-            return true;
+    /**
+     * Displays the registration information on the public site.
+     * 
+     * @todo - Check if the current authenticated user already has an application.
+     * 
+     **/
+    function display_registration() {
+        
+        // If the post contains a value for the application_text field, we'll save it.
+        if ( isset( $_POST['application_text'] ) ) {
+            thatcamp_registrations_add_registration();
+            echo '<p>Your registration has been saved.</p>';
+        } else {
+            if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
+                echo '<div>You must have a user account to complete your application. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
+            } else {        
+                
+                echo '<form method="post" action="">';
+                $this->_application_form();
+                
+                if ( !thatcamp_registrations_user_required() ) {
+                    $this->_user_info_form(); 
+                } else {
+                    echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
+                }
+                
+                echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
+                echo '</form>';
+            }
         }
-        return false;
     }
     
-    function auto_approve_applications() {
-        return (bool) $this->options['auto_approve_applications'];
-    }
-    
-    function create_user_accounts() {
-        return (bool) $this->options['create_user_accounts'];
-    }
-    
-    function user_required() {
-        return (bool) $this->options['require_login'];
-    }
-    
-    function save_registration() {
-        
-        
-        
-    }
-    
-    function user_info_form() {
+    function _user_info_form() {
     ?>
     <fieldset>
         <legend>Personal Information</legend>
-        
-        <label for="first_name"><?php _e('First Name'); ?></label>
+        <div>
+        <label for="first_name"><?php _e('First Name'); ?></label><br/>
         <input type="text" name="first_name" value="<?php echo $this->current_user->first_name; ?>" />
-    
-        <label for="last_name"><?php _e('Last Name'); ?></label>
-        <input type="text" name="last_name" value="<?php echo $this->current_user->last_name; ?>" />
-    
-        <label for="email"><?php _e('Email'); ?></label>
-        <input type="text" name="email" value="<?php echo $this->current_user->user_email; ?>" />
-    
-        <label for="website"><?php _e('Website'); ?></label>
-        <input type="text" name="website" value="<?php echo $this->current_user->user_url; ?>" />
-        
-        <label for="title"><?php _e('Title', 'thatcamp-registrations'); ?></label>
-        <input type="text" name="title" value="<?php echo $this->current_user->user_title; ?>" />
-        
-        <label for="organization"><?php _e('Organization/Institution', 'thatcamp-registrations'); ?></label>
-        <input type="text" name="organization" value="<?php echo $this->current_user->user_organization; ?>" />
-        
-        <label for="twitter_screenname"><?php _e('Twitter Screenname', 'thatcamp-registrations'); ?></label>
-        <input type="text" name="twitter_screenname" value="<?php echo $this->current_user->twitter_screenname; ?>" />
-    
-        <label for="bio"><?php _e('Bio'); ?></label>
-        <textarea name="bio"><?php echo $this->current_user->description; ?></textarea>
-        
-        <input type="hidden" name="user_id" value="<?php echo $this->current_user->ID; ?>" />
-        
+    </div>
+    <div>
+        <label for="last_name"><?php _e('Last Name'); ?></label><br/>
+        <input type="text" name="last_name" value="<?php echo @$this->current_user->last_name; ?>" />
+    </div>
+    <div>
+        <label for="user_email"><?php _e('Email'); ?></label><br/>
+        <input type="text" name="user_email" value="<?php echo @$this->current_user->user_email; ?>" />
+    </div>
+    <div>
+        <label for="user_url"><?php _e('Website'); ?></label><br/>
+        <input type="text" name="user_url" value="<?php echo @$this->current_user->user_url; ?>" />
+        </div>
+        <div>
+        <label for="user_title"><?php _e('Title', 'thatcamp-registrations'); ?></label><br/>
+        <input type="text" name="user_title" value="<?php echo @$this->current_user->user_title; ?>" />
+        </div>
+        <div>
+        <label for="user_organization"><?php _e('Organization/Institution', 'thatcamp-registrations'); ?></label><br />
+        <input type="text" name="organization" value="<?php echo @$this->current_user->user_organization; ?>" /><br/>
+        </div>
+        <div>
+        <label for="user_twitter"><?php _e('Twitter Screenname', 'thatcamp-registrations'); ?></label><br/>
+        <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" />
+    </div>
+    <div>
+        <label for="description"><?php _e('Bio'); ?></label><br/>
+        <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
+        </div>
+
     </fieldset>
     <?php
     }
     
-    function application_form() {
+    function _application_form() {
     ?>
     <fieldset>
         <legend>Application Information</legend>
+    <div>
+        <label for="application_text"><?php _e('Application', 'thatcamp-registrations'); ?></label><br />
+        <textarea cols="45" rows="8" name="application_text"><?php echo @$_POST['application_text']; ?></textarea>
+    </div>
+    <div>
+        <label for="bootcamp_session"><?php _e('Would you be willing to volunteer to teach a BootCamp session? If so, on what?', 'thatcamp-registrations'); ?></label><br />
+        <textarea cols="45" rows="8" name="bootcamp_session"><?php echo @$_POST['bootcamp_session']; ?></textarea>
+     </div>
+     <div> 
+        <label for="additional_information"><?php _e('Additional Information', 'thatcamp-registrations'); ?></label><br/>
+        <textarea cols="45" rows="8" name="additional_information"><?php echo @$_POST['additional_information']; ?></textarea>
+    </div>
+    <input type="hidden" name="date" value="<?php echo current_time('mysql'); ?>">
     
-        <label for="application_text"><?php _e('Application', 'thatcamp-registrations'); ?></label>
-        <textarea name="application_text"><?php echo @$_POST['application_text']; ?></textarea>
-        
-        <label for="bootcamp_session"><?php _e('Would you be willing to volunteer to teach a BootCamp session? If so, on what?', 'thatcamp-registrations'); ?></label>
-        <textarea name="bootcamp_session"><?php echo @$_POST['bootcamp_session']; ?></textarea>
-        
-        <label for="additional_information"><?php _e('Additional Information', 'thatcamp-registrations'); ?></label>
-        <textarea name="additional_information"><?php echo @$_POST['additional_information']; ?></textarea>
     </fieldset>
-    <?php
-    }
-    
-    function display_registration() {
-        if ( isset($_POST) ) $this->save_registration();
-        
-    ?>
-    <form method="post" action="">
-    
-    <?php if ( $this->user_required() && !$this->current_user): ?>
-        <p>You must be logged in to complete your application.</p>        
-    <?php else: ?>
-        <?php echo $this->application_form(); ?>
-        <?php if ( !$this->current_user ) echo $this->user_info_form(); ?>
-    <?php endif; ?>
-    
-    <input type="submit" name="thatcamp_registrations_save_registration" value="<?php _e('Submit Application', 'thatcamp-registrations') ; ?>">
-    </form>
     <?php
     }
 }

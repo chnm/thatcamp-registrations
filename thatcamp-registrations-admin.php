@@ -21,10 +21,106 @@ class Thatcamp_Registrations_Admin {
     }
 
     function registrations_display() {
+        
     ?>
+    <style type="text/css" media="screen">
+        #thatcamp-registrations-panel {
+            background: #fff;
+        	margin: 25px 15px 25px 15px;
+        	padding: 20px;
+        	-moz-border-radius: 6px;
+        	-webkit-border-radius: 6px;
+        	border-radius: 6px;
+        	-moz-box-shadow: #ddd 0 -1px 10px;
+        	-webkit-box-shadow: #ddd 0 -1px 10px;
+        	-khtml-box-shadow: #ddd 0 -1px 10px;
+        	box-shadow: #ddd 0 -1px 10px;
+        	color: #555;
+        	overflow: hidden;
+        	
+        }
+        
+        #thatcamp-registrations-applicant-info th,
+        #thatcamp-registrations-applicant-info td {
+            border-bottom: 1px dotted #ddd;
+            line-height: 2em;
+        }
+        #thatcamp-registrations-applicant-info th {
+            width: 20%;
+        }
+        #thatcamp-registrations-list-link {
+            display:block;
+            float:right;
+            width: 20%;
+            background: #eee;
+            color: #333;
+            text-decoration:none;
+            text-align:center;
+            padding: 10px 20px;
+            border:1px solid #ddd;
+            -moz-border-radius: 6px;
+        	-webkit-border-radius: 6px;
+        	border-radius: 6px;
+        }
+        #thatcamp-registrations-list-link:link,
+        #thatcamp-registrations-list-link:visited {
+            color: #21759B;
+        }
+        #thatcamp-registrations-list-link:hover,
+        #thatcamp-registrations-list-link:active {
+            color: #D54E21;
+            background: #f9f9f9;
+        }
+    </style>
         <div class="wrap">
-            
             <h2><?php echo _e('THATCamp Registrations'); ?></h2>
+            <p>Token: <?php echo sha1(microtime() . mt_rand(1, 100000)); ?></p>
+            <?php
+            // if id is set in the URL, we need to view the application with that ID.
+            if ( isset($_GET['id']) ) {
+                $registration = thatcamp_registrations_get_registration_by_id($_GET['id']);
+                $applicant = thatcamp_registrations_get_applicant_info($registration->id);                   
+            ?>
+            <div id="thatcamp-registrations-panel">
+            
+                <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations">Back to registrations list</a>
+                
+            <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> [ <?php echo $applicant->user_email; ?> ]</h3>
+                <table class="form-table">
+                    <tr valign="top">
+                        <h4><?php _e( 'Application Status', 'thatcamp-registrations' ) ?></label></h4>
+                            <form action="" method="post">
+                            
+                            <select name="status">
+                                <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
+                                <option value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
+                                <option value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
+                            </select>
+                            <input type="submit" name="update_status" value="Update Status">
+                            
+                            <p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
+                            </form>
+
+                            <h4>Application Text</h4>
+                            <?php echo $registration->application_text; ?>
+                            <h4>Interest in Teaching a Bootcamp Session?</h4>
+                            <?php echo $registration->bootcamp_session; ?>
+                            <h4>Additional Information?</h4>
+                            <?php echo $registration->additional_information; ?>
+                            <h4>Applicant Information</h4>
+                            <table id="thatcamp-registrations-applicant-info">
+                            <?php foreach($applicant as $field => $value): ?>
+                                <tr valign="top">
+                                    <th align="left"><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
+                                    <td><?php echo $value; ?></td>
+                            <?php endforeach; ?>
+                            </table>
+            </div>
+            <?php
+            // Otherwise, we need to view the list of applications.
+            } else {
+            
+            ?>
             
             <?php 
             /* 
@@ -48,19 +144,55 @@ class Thatcamp_Registrations_Admin {
             <?php endif; ?>
             
             <?php 
-            /*
+            
             $registrations = thatcamp_registrations_get_registrations(); 
-            if ($registrations): 
-                foreach ($registrations as $registration):
-            ?>
+            if ($registrations): ?>
             
-            
-            
-            <?php 
-                endwhile; 
-            endif; 
-            */
-            ?>
+                <form action="" method="post">
+                
+                <table class="widefat fixed" cellspacing="0">
+                <thead>
+                <tr class="thead">
+                    <th>Applicant Name</th>
+                    <th>Applicant Email</th>
+                    <th>Application Text</th>
+                    <th>Status</th>
+                    <th>View</th>
+                </tr>
+                </thead>
+
+                <tfoot>
+                <tr class="thead">
+                    <th>Applicant Name</th>
+                    <th>Applicant Email</th>
+                    
+                    <th>Application Text</th>
+                    <th>Status</th>
+                    <th>View</th>
+                </tr>
+                </tfoot>
+
+                <tbody id="users" class="list:user user-list">
+                <?php foreach ( $registrations as $registration ): ?>
+                    <tr>
+                        <?php $applicant = thatcamp_registrations_get_applicant_info($registration->id); ?>                      
+                        <td><?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?></td>
+                        <td><?php echo $applicant->user_email; ?></td>
+                        
+                        <td><?php echo $registration->application_text; ?></td>
+                        <td><?php echo ucwords($registration->status); ?></td>
+                        <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Application</a></td>
+                    </tr>
+                        
+
+                <?php endforeach; ?>
+                </tbody>
+                </table>
+                </form>
+                <?php else: ?>
+            <p>You don't have any registrations yet.</p>
+            <?php endif; ?>
+            <?php } ?>
         </div>
     <?php
     }
@@ -70,6 +202,7 @@ class Thatcamp_Registrations_Admin {
         if ( isset($_POST['thatcamp_registrations_save_changes']) ) {
             
             $newOptions = array(
+                'open_registration'             =>  $_POST['open_registration'],
                 'create_user_accounts'          =>  $_POST['create_user_accounts'],
                 'require_login'                 =>  $_POST['require_login'],
                 'auto_approve_applications'     =>  is_numeric($_POST['auto_approve_applications']) ? $_POST['auto_approve_applications'] : '0',
@@ -91,6 +224,16 @@ class Thatcamp_Registrations_Admin {
             
             <form action="" method="post">
                 <table class="form-table">
+                    <tr valign="top">
+                        <th scope="row"><label for="open_registration"><?php _e( 'Open Registration?', 'thatcamp-registrations' ) ?></label></th>
+                        <td>
+                            <select name="open_registration">
+                                <option value="0"><?php _e('No'); ?> </option>
+                                <option value="1"<?php if($options['open_registration'] == 1) { echo ' selected="selected"';} ?>><?php _e('Yes'); ?> </option>
+                            </select>
+                            <p class="description"><?php _e('If &#8220;Yes&#8221; the registration form will be open.', 'thatcamp-registrations'); ?></p>
+                        </td>
+                    </tr>
                     <tr valign="top">
                         <th scope="row"><label for="create_user_accounts"><?php _e( 'Create user accounts after registering?', 'thatcamp-registrations' ) ?></label></th>
                         <td>

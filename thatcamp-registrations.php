@@ -111,10 +111,13 @@ class Thatcamp_Registrations_Loader {
         		$charset_collate .= " COLLATE {$wpdb->collate}";
         		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
         		  	id bigint(20) NOT NULL AUTO_INCREMENT,
-        		  	applicant text NOT NULL,
+        		  	date datetime NOT NULL,
+        		  	user_id bigint(2) NULL,
+        		  	applicant_info text NULL,
         			application_text text NOT NULL,
         			bootcamp_session text DEFAULT NULL,
         			additional_information text DEFAULT NULL,
+        			status varchar(255) NOT NULL,
         		  	UNIQUE KEY id (id)
         		) {$charset_collate};";
 
