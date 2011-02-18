@@ -160,24 +160,26 @@ function thatcamp_registrations_process_registration($id, $status) {
 function thatcamp_registrations_process_user($userId = null, $userInfo = array(), $registrationId = null, $role = 'author') {
     global $wpdb;
     
-    // If the Registration ID is set, we'll use the user_id and application_info colums from that record.
+    /**
+     * If the Registration ID is set, it means we already have a registration 
+     * record! Booyah. We'll use the user_id and application_info colums from 
+     * that record to process the user.
+     */
     if ($registration = thatcamp_registrations_get_registration_by_id($registrationId)) {        
         $userId = $registration->user_id;
         $userInfo = maybe_unserialize($registration->applicant_info);
     } else {
-    // If we pass a User ID, we're probably dealing with an existing user.
-        if ($userId) {
-            add_existing_user_to_blog($userId);
-        } else { // We might be dealing with a user, if their email is associated with an existing user account.
-            if ($userId = email_exists($userInfo->user_email)) {
-            	thatcamp_registrations_update_user_data($userId, $userInfo);
-            } else { // We're probably dealing with a new user. Lets create one and associate it to our blog.
-            	$randomPassword = wp_generate_password( 12, false );
-            	$userEmail = $userInfo->user_email;
-            	$userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
-            	add_user_to_blog($wpdb->blogid, $userId, $role);
-            	thatcamp_registrations_update_user_data($userId, $userInfo);
-            }
+        // If we pass a User ID, we're probably dealing with an existing user.
+        if ($userId && !is_user_member_of_blog($userId)) {
+            add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
+        } else if ($userId = email_exists($userInfo['user_email'])) {
+        	thatcamp_registrations_update_user_data($userId, $userInfo);
+        } else { // We're probably dealing with a new user. Lets create one and associate it to our blog.
+        	$randomPassword = wp_generate_password( 12, false );
+        	$userEmail = $userInfo['user_email'];
+        	$userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
+        	add_user_to_blog($wpdb->blogid, $userId, $role);
+        	thatcamp_registrations_update_user_data($userId, $userInfo);
         }
     }
     

@@ -29,18 +29,21 @@ class Thatcamp_Registrations_Public_Registration {
      **/
     function display_registration() {
         
-        // If the post contains a value for the application_text field, we'll save it.
-        if ( isset( $_POST['application_text'] ) ) {
-            thatcamp_registrations_add_registration();
-            echo '<p>Your registration has been saved.</p>';
+        if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
+            echo '<div>You must have a user account to complete your application. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
         } else {
-            if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
-                echo '<div>You must have a user account to complete your application. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
-            } else {        
-                
+            // If the post contains a value for the application_text field, we'll save it.
+            if ( !empty( $_POST['application_text'] ) ) {
+                thatcamp_registrations_add_registration();
+                echo '<p>Your registration has been saved.</p>';
+            } else {
+                if ( empty( $_POST['application_text'] ) ) {
+                    echo '<p class="alert"><em>You must add application text.</em></p>';
+                }
                 echo '<form method="post" action="">';
                 $this->_application_form();
                 
+                // If user login is not required, display the user info form.
                 if ( !thatcamp_registrations_user_required() ) {
                     $this->_user_info_form(); 
                 } else {
