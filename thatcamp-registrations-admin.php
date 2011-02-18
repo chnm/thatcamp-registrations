@@ -20,8 +20,28 @@ class Thatcamp_Registrations_Admin {
     	}
     }
 
+    /**
+     * Displays various panels for the admin registration. If there is an ID set
+     * in the URL, it will display a single registration record based on that ID.
+     * Otherwise, it will display all the registration records in a table.
+     */
     function registrations_display() {
-        
+        // if id is set in the URL, we need to view the application with that ID.
+        if ( $id = @$_GET['id'] ) {
+            $registration = thatcamp_registrations_get_registration_by_id($id);
+            $applicant = thatcamp_registrations_get_applicant_info($registration->id);
+            $applicantUser = 0; 
+            if (($userId = email_exists($applicant->user_email)) && is_user_member_of_blog($userId)) {
+                $applicantUser = 1;
+            }
+            
+            if (isset($_POST['update_status'])) {
+    			thatcamp_registrations_process_registration($_GET['id'], $_POST['status']);		    
+    			if (isset($_POST['user_account']) && $_POST['user_account'] == 1) {
+    			    thatcamp_registrations_process_user(null, $applicant);
+    			}
+    		}
+        }                 
     ?>
     <style type="text/css" media="screen">
         #thatcamp-registrations-panel {
@@ -74,31 +94,32 @@ class Thatcamp_Registrations_Admin {
     </style>
         <div class="wrap">
             <h2><?php echo _e('THATCamp Registrations'); ?></h2>
-            <p>Token: <?php echo sha1(microtime() . mt_rand(1, 100000)); ?></p>
-            <?php
-            // if id is set in the URL, we need to view the application with that ID.
-            if ( isset($_GET['id']) ) {
-                $registration = thatcamp_registrations_get_registration_by_id($_GET['id']);
-                $applicant = thatcamp_registrations_get_applicant_info($registration->id);                   
-            ?>
+            <?php if ($id) { ?>
             <div id="thatcamp-registrations-panel">
             
                 <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations">Back to registrations list</a>
                 
-            <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> [ <?php echo $applicant->user_email; ?> ]</h3>
+            <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
                 <table class="form-table">
                     <tr valign="top">
                         <h4><?php _e( 'Application Status', 'thatcamp-registrations' ) ?></label></h4>
-                            <form action="" method="post">
+                            <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>" method="post">
+                            <label for="user_account">Is Blog User?</label>
+                            <select name="user_account">
+                                <option value="0">No</option>
+                                <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>>Yes</option>
+                            </select>
+                            <p class="description"><?php _e('Applicant is a user?', 'thatcamp-registrations'); ?></p>
                             
                             <select name="status">
                                 <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
                                 <option value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
                                 <option value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
                             </select>
+							<p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
+                            
                             <input type="submit" name="update_status" value="Update Status">
                             
-                            <p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
                             </form>
 
                             <h4>Application Text</h4>

@@ -125,6 +125,11 @@ function thatcamp_registrations_process_registrations($ids = array(), $status) {
             array('status' => $status),
             $idArray
             );
+        if ($status == 'approved' && thatcamp_registrations_create_user_accounts()) {
+            foreach ($ids as $id) {
+                thatcamp_registrations_process_user(null, array(), $id);
+            }
+        }
     }
     
     return;
@@ -164,11 +169,11 @@ function thatcamp_registrations_process_user($userId = null, $userInfo = array()
         if ($userId) {
             add_existing_user_to_blog($userId);
         } else { // We might be dealing with a user, if their email is associated with an existing user account.
-            if ($userId = email_exists($userInfo['user_email'])) {
+            if ($userId = email_exists($userInfo->user_email)) {
             	thatcamp_registrations_update_user_data($userId, $userInfo);
             } else { // We're probably dealing with a new user. Lets create one and associate it to our blog.
             	$randomPassword = wp_generate_password( 12, false );
-            	$userEmail = $userInfo['user_email'];
+            	$userEmail = $userInfo->user_email;
             	$userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
             	add_user_to_blog($wpdb->blogid, $userId, $role);
             	thatcamp_registrations_update_user_data($userId, $userInfo);
@@ -306,6 +311,16 @@ function thatcamp_registrations_create_user_accounts()
 function thatcamp_registrations_user_required() 
 {
     return (bool) thatcamp_registrations_option('require_login');
+}
+
+/**
+ * Checks if registration is open.
+ *
+ * @return boolean
+ */
+function thatcamp_registrations_registration_is_open()
+{
+    return (bool) thatcamp_registrations_option('open_registration');
 }
 
 /**
