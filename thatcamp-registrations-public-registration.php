@@ -4,8 +4,8 @@ if ( !class_exists( 'Thatcamp_Registrations_Public_Registration' ) ) :
 
 class Thatcamp_Registrations_Public_Registration {
     
-    public $options;
-    public $current_user;
+    private $options;
+    private $current_user;
     
     function thatcamp_registrations_public_registration() {
         add_shortcode('thatcamp-registration', array($this, 'shortcode'));  
