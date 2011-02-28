@@ -37,7 +37,7 @@ class Thatcamp_Registrations_Public_Registration {
                 thatcamp_registrations_add_registration();
                 echo '<p>Your registration has been saved.</p>';
             } else {
-                if ( empty( $_POST['application_text'] ) ) {
+                if ( (!empty($_POST)) && (empty( $_POST['application_text'] )) ) {
                     echo '<p class="alert"><em>You must add application text.</em></p>';
                 }
                 echo '<form method="post" action="">';
