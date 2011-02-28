@@ -69,7 +69,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         array(
             'applicant_info'            => $applicant_info, 
             'application_text'          => $applicationText,
-            'bootcamp_session'          => $bootcampSession,
             'additional_information'    => $additionalInformation,
             'status'                    => $status,
             'date'                      => $date,

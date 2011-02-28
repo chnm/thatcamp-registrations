@@ -115,7 +115,6 @@ class Thatcamp_Registrations_Loader {
         		  	user_id bigint(2) NULL,
         		  	applicant_info text NULL,
         			application_text text NOT NULL,
-        			bootcamp_session text DEFAULT NULL,
         			additional_information text DEFAULT NULL,
         			status varchar(255) NOT NULL,
         		  	UNIQUE KEY id (id)
