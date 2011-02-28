@@ -15,8 +15,8 @@ class Thatcamp_Registrations_Admin {
 	
     function admin_menu() {
     	if ( function_exists( 'add_menu_page' ) ) {
-    		add_menu_page(__('THATCamp Registrations'), __('TC Registrations'), 'manage-options', 'thatcamp-registrations', array($this, 'registrations_display'));
-    		add_submenu_page( 'thatcamp-registrations', 'Settings for THATCamp Registrations', 'Settings', 'manage_options', 'thatcamp-registrations-settings', array($this, 'settings_display'));
+    		add_menu_page(__('THATCamp Registrations', 'thatcamp-registrations'), __('TC Registrations', 'thatcamp-registrations'), 'manage-options', 'thatcamp-registrations', array($this, 'registrations_display'));
+    		add_submenu_page( 'thatcamp-registrations', __('Settings for THATCamp Registrations', 'thatcamp-registrations'), __('Settings', 'thatcamp-registrations'), 'manage_options', 'thatcamp-registrations-settings', array($this, 'settings_display'));
     	}
     }
 
@@ -29,7 +29,7 @@ class Thatcamp_Registrations_Admin {
         // if id is set in the URL, we need to view the application with that ID.
         if ( $id = @$_GET['id'] ) {
             $registration = thatcamp_registrations_get_registration_by_id($id);
-            $applicant = thatcamp_registrations_get_applicant_info($registration->id);
+            $applicant = thatcamp_registrations_get_applicant_info($registration);
             $applicantUser = 0; 
             if (($userId = email_exists($applicant->user_email)) && is_user_member_of_blog($userId)) {
                 $applicantUser = 1;
@@ -94,52 +94,40 @@ class Thatcamp_Registrations_Admin {
     </style>
         <div class="wrap">
             <h2><?php echo _e('THATCamp Registrations'); ?></h2>
-            <?php if ($id) { ?>
+            <?php if ($id): ?>
             <div id="thatcamp-registrations-panel">
-            
                 <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations">Back to registrations list</a>
-                
-            <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
-                <table class="form-table">
-                    <tr valign="top">
-                        <h4><?php _e( 'Application Status', 'thatcamp-registrations' ) ?></label></h4>
-                            <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>" method="post">
-                            <label for="user_account">Is Blog User?</label>
-                            <select name="user_account">
-                                <option value="0">No</option>
-                                <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>>Yes</option>
-                            </select>
-                            <p class="description"><?php _e('Applicant is a user?', 'thatcamp-registrations'); ?></p>
-                            
-                            <select name="status">
-                                <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
-                                <option value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
-                                <option value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
-                            </select>
-							<p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
-                            
-                            <input type="submit" name="update_status" value="Update Status">
-                            
-                            </form>
 
-                            <h4>Application Text</h4>
-                            <?php echo $registration->application_text; ?>
-                            <h4>Interest in Teaching a Bootcamp Session?</h4>
-                            <?php echo $registration->bootcamp_session; ?>
-                            <h4>Additional Information?</h4>
-                            <?php echo $registration->additional_information; ?>
-                            <h4>Applicant Information</h4>
-                            <table id="thatcamp-registrations-applicant-info">
-                            <?php foreach($applicant as $field => $value): ?>
-                                <tr valign="top">
-                                    <th align="left"><?php echo ucwords(str_replace('_', ' ', $field)); ?></th>
-                                    <td><?php echo $value; ?></td>
-                            <?php endforeach; ?>
-                            </table>
+                <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
+                <h4><?php _e( 'Application Status', 'thatcamp-registrations' ) ?></h4>
+                
+                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>" method="post">
+                    <label for="user_account">Is Blog User?</label>
+                    <select name="user_account">
+                        <option value="0">No</option>
+                        <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>>Yes</option>
+                    </select>
+                    <p class="description"><?php _e('Applicant is a user?', 'thatcamp-registrations'); ?></p>
+
+                    <select name="status">
+                        <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
+                        <option value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
+                        <option value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
+                    </select>
+                    <p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
+
+                    <input type="submit" name="update_status" value="Update Status">
+
+                </form>
+
+                <h4>Application Text</h4>
+                <?php echo $registration->application_text; ?>
+                <h4>Additional Information?</h4>
+                <?php echo $registration->additional_information; ?>
             </div>
             <?php
             // Otherwise, we need to view the list of applications.
-            } else {
+            else:
             
             ?>
             
@@ -158,7 +146,7 @@ class Thatcamp_Registrations_Admin {
             
             <?php 
             $options = get_option('thatcamp_registrations_options');
-            if ( !isset($options)): ?>
+            if ( empty($options)): ?>
             <div class="updated">
                 <p><?php _e('You have not updated your THATCamp Registrations settings.'); ?> <a href="admin.php?page=thatcamp-registrations-settings"><?php _e('Update your settings.'); ?></a></p>
             </div>
@@ -196,24 +184,21 @@ class Thatcamp_Registrations_Admin {
                 <tbody id="users" class="list:user user-list">
                 <?php foreach ( $registrations as $registration ): ?>
                     <tr>
-                        <?php $applicant = thatcamp_registrations_get_applicant_info($registration->id); ?>                      
+                        <?php $applicant = thatcamp_registrations_get_applicant_info($registration); ?>                      
                         <td><?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?></td>
                         <td><?php echo $applicant->user_email; ?></td>
-                        
                         <td><?php echo $registration->application_text; ?></td>
                         <td><?php echo ucwords($registration->status); ?></td>
                         <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Application</a></td>
                     </tr>
-                        
-
                 <?php endforeach; ?>
                 </tbody>
                 </table>
                 </form>
                 <?php else: ?>
-            <p>You don't have any registrations yet.</p>
+                    <p>You don't have any registrations yet.</p>
+                <?php endif; ?>
             <?php endif; ?>
-            <?php } ?>
         </div>
     <?php
     }

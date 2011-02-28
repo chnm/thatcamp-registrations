@@ -45,18 +45,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         }
     }
     
-    // If we're auto-approving applications
-    if ($autoApprove) {
-        // Set the status to approved
-        $status = 'approved';
-        
-        // If we have the create user account option set
-        if ( thatcamp_registrations_create_user_accounts() ) {
-            // If there isn't a user_id or existing email in the users table, we'll create a user
-            $user_id = thatcamp_registrations_process_user($user_id, $applicant_info);
-        } 
-    }
-    
     $date = isset($_POST['date']) ? $_POST['date'] : null;
     $applicationText = isset($_POST['application_text']) ? $_POST['application_text'] : null;
     $bootcampSession = isset($_POST['bootcamp_session']) ? $_POST['bootcamp_session'] : null;
@@ -75,7 +63,10 @@ function thatcamp_registrations_add_registration($status = 'pending') {
             'user_id'                   => $user_id
             )
         );
-    return;
+
+    // Get and return the application ID
+    $applicationId = $wpdb->insert_id;
+    return $applicationId;
 }
 
 /**
@@ -85,22 +76,22 @@ function thatcamp_registrations_add_registration($status = 'pending') {
  **/
 function thatcamp_registrations_get_registrations($params = array()) {
     global $wpdb;
-	$registrations_table = $wpdb->prefix . "thatcamp_registrations";
-	
-	$sql = "SELECT * FROM " . $registrations_table;
-	
-	if( isset($params['id']) && $id = $params['id']) {
-	    $sql .= " WHERE id=".$params['id'];
-	    if( isset($params['status']) && $status = $params['status']) {
-	        $sql .= " AND status = CONVERT( _utf8 '$status' USING latin1 )";
-	    }
-	} elseif ( isset($params['status']) && $status = $params['status']) {
+    $registrations_table = $wpdb->prefix . "thatcamp_registrations";
+    
+    $sql = "SELECT * FROM " . $registrations_table;
+    
+    if( isset($params['id']) && $id = $params['id']) {
+        $sql .= " WHERE id=".$params['id'];
+        if( isset($params['status']) && $status = $params['status']) {
+            $sql .= " AND status = CONVERT( _utf8 '$status' USING latin1 )";
+        }
+    } elseif ( isset($params['status']) && $status = $params['status']) {
         $sql .= " WHERE status = CONVERT( _utf8 '$status' USING latin1 )";
     }
-	
+    
     // echo $sql; exit;
-	$results = $wpdb->get_results($sql, OBJECT);
-	return $results;
+    $results = $wpdb->get_results($sql, OBJECT);
+    return $results;
 }
 
 /**
@@ -171,14 +162,14 @@ function thatcamp_registrations_process_user($userId = null, $userInfo = array()
         // If we pass a User ID, we're probably dealing with an existing user.
         if ($userId && !is_user_member_of_blog($userId)) {
             add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
-        } else if ($userId = email_exists($userInfo['user_email'])) {
-        	thatcamp_registrations_update_user_data($userId, $userInfo);
+        } else if ($userId = email_exists($userInfo->user_email)) {
+            thatcamp_registrations_update_user_data($userId, $userInfo);
         } else { // We're probably dealing with a new user. Lets create one and associate it to our blog.
-        	$randomPassword = wp_generate_password( 12, false );
-        	$userEmail = $userInfo['user_email'];
-        	$userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
-        	add_user_to_blog($wpdb->blogid, $userId, $role);
-        	thatcamp_registrations_update_user_data($userId, $userInfo);
+            $randomPassword = wp_generate_password( 12, false );
+            $userEmail = $userInfo->user_email;
+            $userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
+            add_user_to_blog($wpdb->blogid, $userId, $role);
+            thatcamp_registrations_update_user_data($userId, $userInfo);
         }
     }
     
@@ -205,9 +196,9 @@ function thatcamp_registrations_update_user_data($userId, $params)
 function thatcamp_registrations_get_registration_by_id($id) 
 {
     global $wpdb;
-	$registrations_table = $wpdb->prefix . "thatcamp_registrations";
-	$sql = "SELECT * from " . $registrations_table . " WHERE id = " .$id;
-	return $wpdb->get_row($sql, OBJECT);
+    $registrations_table = $wpdb->prefix . "thatcamp_registrations";
+    $sql = "SELECT * from " . $registrations_table . " WHERE id = " .$id;
+    return $wpdb->get_row($sql, OBJECT);
 }
 
 /**
@@ -265,33 +256,20 @@ function thatcamp_registrations_option($optionName)
     return false;
 }
 
-function thatcamp_registrations_get_applicant_info($registrationId) 
+function thatcamp_registrations_get_applicant_info($registration) 
 {
     global $wpdb;
-	$registrations_table = $wpdb->prefix . "thatcamp_registrations";
-	$sql = "SELECT * from " . $registrations_table . " WHERE id = " .$registrationId;
-	$record = $wpdb->get_row($sql, OBJECT);
-	if (($record->user_id == 0 || $record->user_id == null) && !empty($record->applicant_info)) {
-	    return (object) maybe_unserialize($record->applicant_info);
-	} else {
-	    return get_userdata($record->user_id);
-	    
-	}
-}
-
-function thatcamp_registrations_send_applicant_email($status = "pending")
-{
     
-}
- 
-/**
- * Checks the option to auto approve applications.
- *
- * @return boolean
- **/ 
-function thatcamp_registrations_auto_approve_applications() 
-{
-    return (bool) thatcamp_registrations_option('auto_approve_applications');
+    if ($registration) {
+        $registrations_table = $wpdb->prefix . "thatcamp_registrations";
+        $sql = "SELECT * from " . $registrations_table . " WHERE id = " .$registration->id;
+        $record = $wpdb->get_row($sql, OBJECT);
+        if (($record->user_id == 0 || $record->user_id == null) && !empty($record->applicant_info)) {
+            return (object) maybe_unserialize($record->applicant_info);
+        } else {
+            return get_userdata($record->user_id);
+        }
+    }
 }
 
 /**
