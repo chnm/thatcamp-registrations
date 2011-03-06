@@ -63,34 +63,12 @@ class Thatcamp_Registrations_Public_Registration {
             
             echo '<form method="post" action="">';
             
-            // If user login is not required, display the user info form.
-            if ( !thatcamp_registrations_user_required() ) {
-                $this->_user_info_form();
-            } elseif (is_user_logged_in()) {
-                echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
-            }
-            
-            echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
-            echo '</form>';
-        }
-        // If the post contains a value for the application_text field, we'll save it.
-        if ( !empty( $_POST['application_text'] ) ) {
-            if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email(@$_POST['user_email'])) {
-                echo '<p>Your have already registered with that email address.</p>';
-            } else {
-                thatcamp_registrations_add_registration();
-                echo '<p>Your registration has been saved.</p>';
-            }
-        } else {
             $this->_application_form();
             
             // If user login is not required, display the user info form.
             if ( !thatcamp_registrations_user_required() ) {
                 $this->_user_info_form();
-                if ( (!empty($_POST)) && (empty( $_POST['user_email'] )) ) {
-                    $alert = __('You must add an email address.', 'thatcamp-registrations');
-                }
-            } else {
+            } elseif (is_user_logged_in()) {
                 echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
             }
             
