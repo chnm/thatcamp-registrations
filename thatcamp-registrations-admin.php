@@ -262,6 +262,7 @@ class Thatcamp_Registrations_Admin {
                         </td>
                     </tr>
                     
+                    <?php /* Removing auto-approve field until this feature works. ?>
                     <tr valign="top">
                         <th scope="row"><label for="auto_approve_applications"><?php _e('Automatically approve applications', 'thatcamp-registrations'); ?></label></th>
                         <td>
@@ -269,6 +270,7 @@ class Thatcamp_Registrations_Admin {
                             <p class="description"><?php _e('If you wish THATCamp Registrations to automatically approve a certain number of applications, fill in that number here. If left blank, or set to 0, no applications will be automatically approved.', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
+                    <?php */
                     <tr valign="top">
                         <th scope="row"><label for="pending_application_email"><?php _e('Pending Application Email', 'thatcamp-registrations'); ?></label></th>
                         <td>
