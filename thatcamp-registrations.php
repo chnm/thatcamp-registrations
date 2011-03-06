@@ -113,6 +113,7 @@ class Thatcamp_Registrations_Loader {
         		  	id bigint(20) NOT NULL AUTO_INCREMENT,
         		  	date datetime NOT NULL,
         		  	user_id bigint(2) NULL,
+        		  	applicant_email varchar(255) NOT NULL,
         		  	applicant_info text NULL,
         			application_text text NOT NULL,
         			additional_information text DEFAULT NULL,

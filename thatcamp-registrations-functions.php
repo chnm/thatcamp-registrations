@@ -11,8 +11,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     global $wpdb;
     $table = $wpdb->prefix . "thatcamp_registrations";
     
-    $autoApprove = thatcamp_registrations_auto_approve_applications();
-
     $_POST = stripslashes_deep($_POST);
     
     // The user_id is set to the posted user ID, or null.
@@ -38,9 +36,8 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     
     // If the user_id is null, we don't have an authenticated user. So, we'll use the applicant_info
     if ( $user_id == null ) {
-
         // If there isn't a user_id, but a user exists with the posted email. Sneaky!
-        if ( $user_id = email_exists($applicant_info['user_email'])) {
+        if ( $user_id = email_exists($_POST['applicant_email'])) {
             thatcamp_registrations_process_user($user_id, $applicant_info);
         }
     }
@@ -51,22 +48,30 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     $additionalInformation = isset($_POST['additional_information']) ? $_POST['additional_information'] : null;
     // Lets serialize the applicant_info before putting it in the database.
     $applicant_info = maybe_serialize($applicant_info);
+    $applicant_email = isset($_POST['user_email']) ? $_POST['user_email'] : null;
     
-    $wpdb->insert(
-        $table, 
-        array(
-            'applicant_info'            => $applicant_info, 
-            'application_text'          => $applicationText,
-            'additional_information'    => $additionalInformation,
-            'status'                    => $status,
-            'date'                      => $date,
-            'user_id'                   => $user_id
-            )
-        );
+    if (($registration = thatcamp_registrations_get_registration_by_user_id($user_id) )
+        || ($registration = thatcamp_registrations_get_registration_by_applicant_email($applicant_email)) ) {
+            return 'You have already submitted an application.';
+    } else {
+        $wpdb->insert(
+            $table,
+            array(
+                'applicant_info'            => $applicant_info,
+                'applicant_email'           => $applicant_email,
+                'application_text'          => $applicationText,
+                'additional_information'    => $additionalInformation,
+                'status'                    => $status,
+                'date'                      => $date,
+                'user_id'                   => $user_id
+                )
+            );
+        thatcamp_registrations_send_applicant_email($applicant_info);
 
-    // Get and return the application ID
-    $applicationId = $wpdb->insert_id;
-    return $applicationId;
+        // Get and return the application ID
+        $applicationId = $wpdb->insert_id;
+        return $applicationId;
+    }
 }
 
 /**
@@ -180,7 +185,7 @@ function thatcamp_registrations_process_user($userId = null, $userInfo = array()
  * Updates the user data.
  *
  **/
-function thatcamp_registrations_update_user_data($userId, $params) 
+function thatcamp_registrations_update_user_data($userId, $params)
 {
     if ( isset( $userId ) && $userData = get_userdata($userId) ) {
         foreach ($params as $key => $value) {
@@ -193,11 +198,37 @@ function thatcamp_registrations_update_user_data($userId, $params)
  * Gets registration record by ID.
  *
  **/
-function thatcamp_registrations_get_registration_by_id($id) 
+function thatcamp_registrations_get_registration_by_id($id)
 {
     global $wpdb;
     $registrations_table = $wpdb->prefix . "thatcamp_registrations";
     $sql = "SELECT * from " . $registrations_table . " WHERE id = " .$id;
+    return $wpdb->get_row($sql, OBJECT);
+}
+
+/**
+ * Gets registration record by applicant_email.
+ *
+ **/
+function thatcamp_registrations_get_registration_by_applicant_email($applicant_email)
+{
+    global $wpdb;
+    $registrations_table = $wpdb->prefix . "thatcamp_registrations";
+    $sql = "SELECT * from " . $registrations_table . " WHERE applicant_email = " .$applicant_email;
+    return $wpdb->get_row($sql, OBJECT);
+}
+
+/**
+ * Gets registration record by user_id.
+ *
+ * @param int $user_id The User ID.
+ * @return object Registration record.
+ **/
+function thatcamp_registrations_get_registration_by_user_id($user_id)
+{
+    global $wpdb;
+    $registrations_table = $wpdb->prefix . "thatcamp_registrations";
+    $sql = "SELECT * from " . $registrations_table . " WHERE user_id = " .$user_id;
     return $wpdb->get_row($sql, OBJECT);
 }
 
@@ -269,6 +300,32 @@ function thatcamp_registrations_get_applicant_info($registration)
         } else {
             return get_userdata($record->user_id);
         }
+    }
+}
+
+function thatcamp_registrations_send_applicant_email($applicant = null, $status = "pending")
+{
+    if ($applicant) {
+        $email = $applicant->user_email;
+        switch ($status) {
+            case 'approved':
+                $subject = __('Application Approved', 'thatcamp-registrations');
+                $message = thatcamp_registrations_option('accepted_application_email');
+            break;
+            
+            case 'rejected':
+                $subject = __('Application Rejected', 'thatcamp-registrations');
+                $message = thatcamp_registrations_option('rejected_application_email');
+            break;
+            case 'pending':
+            default:
+                $subject = __('Application Pending', 'thatcamp-registrations');
+                $message = thatcamp_registrations_option('pending_application_email');
+            break;
+        }
+        
+        $subject = $subject . ': '.get_bloginfo('name');
+        wp_mail($email, $subject, $message);
     }
 }
 

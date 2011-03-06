@@ -12,7 +12,7 @@ class Thatcamp_Registrations_Public_Registration {
         $this->options = get_option('thatcamp_registrations_options');  
         $this->current_user = wp_get_current_user();
     }
-        
+    
     function shortcode($attr) {
         if (thatcamp_registrations_option('open_registration') == 1) {
             return $this->display_registration();
@@ -28,31 +28,74 @@ class Thatcamp_Registrations_Public_Registration {
      * 
      **/
     function display_registration() {
+        $alerts = array();
+        // Define some alerts if there are errors with the form.
+        if ( !empty($_POST) ) {
+            // Application text is required.
+            if ( empty( $_POST['application_text']) ) {
+                $alerts['application_text'] = __('You must add application text.', 'thatcamp-registrations');
+            }
+            
+            // User email is required.
+            if (empty( $_POST['user_email'] )) {
+                $alerts['user_email'] = __('You must add an email address.', 'thatcamp-registrations');
+            }
+            
+            if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email($_POST['user_email'])) {
+                $alerts['existing_application'] = __('Your have already registered with that email address.','thatcamp-registrations');
+            }
+            
+        }
         
+        // If user registration is required, and the user isn't logged in.
         if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
             echo '<div>You must have a user account to complete your application. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
-        } else {
-            // If the post contains a value for the application_text field, we'll save it.
-            if ( !empty( $_POST['application_text'] ) ) {
+        } 
+        elseif ((!empty($_POST)) && empty($alerts)) {
+            thatcamp_registrations_add_registration();
+            echo '<p>Your registration has been saved.</p>';
+        }
+        else {
+            
+            if (!empty($alerts)) {
+                echo '<p style="background:#fc0; padding: 4px;">There are errors with your form.</p>';
+            }
+            
+            echo '<form method="post" action="">';
+            
+            // If user login is not required, display the user info form.
+            if ( !thatcamp_registrations_user_required() ) {
+                $this->_user_info_form();
+            } elseif (is_user_logged_in()) {
+                echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
+            }
+            
+            echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
+            echo '</form>';
+        }
+        // If the post contains a value for the application_text field, we'll save it.
+        if ( !empty( $_POST['application_text'] ) ) {
+            if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email(@$_POST['user_email'])) {
+                echo '<p>Your have already registered with that email address.</p>';
+            } else {
                 thatcamp_registrations_add_registration();
                 echo '<p>Your registration has been saved.</p>';
-            } else {
-                if ( (!empty($_POST)) && (empty( $_POST['application_text'] )) ) {
-                    echo '<p class="alert"><em>You must add application text.</em></p>';
-                }
-                echo '<form method="post" action="">';
-                $this->_application_form();
-                
-                // If user login is not required, display the user info form.
-                if ( !thatcamp_registrations_user_required() ) {
-                    $this->_user_info_form(); 
-                } else {
-                    echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
-                }
-                
-                echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
-                echo '</form>';
             }
+        } else {
+            $this->_application_form();
+            
+            // If user login is not required, display the user info form.
+            if ( !thatcamp_registrations_user_required() ) {
+                $this->_user_info_form();
+                if ( (!empty($_POST)) && (empty( $_POST['user_email'] )) ) {
+                    $alert = __('You must add an email address.', 'thatcamp-registrations');
+                }
+            } else {
+                echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
+            }
+            
+            echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
+            echo '</form>';
         }
     }
     
