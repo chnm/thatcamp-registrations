@@ -66,7 +66,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
                 'user_id'                   => $user_id
                 )
             );
-        thatcamp_registrations_send_applicant_email($applicant_info);
+        thatcamp_registrations_send_applicant_email($applicant_email);
 
         // Get and return the application ID
         $applicationId = $wpdb->insert_id;
@@ -303,10 +303,16 @@ function thatcamp_registrations_get_applicant_info($registration)
     }
 }
 
-function thatcamp_registrations_send_applicant_email($applicant = null, $status = "pending")
+/**
+ * Send a notification email to a THATCamp Registrations applicant
+ *
+ * @param string The applicant email address.
+ * @param string The status of the application. Options are 'pending',
+ * 'approved', and 'rejected. Default is pending.
+ */
+function thatcamp_registrations_send_applicant_email($to, $status = "pending")
 {
-    if ($applicant) {
-        $email = $applicant->user_email;
+    if (is_email($to)) {
         switch ($status) {
             case 'approved':
                 $subject = __('Application Approved', 'thatcamp-registrations');
@@ -325,8 +331,11 @@ function thatcamp_registrations_send_applicant_email($applicant = null, $status 
         }
         
         $subject = $subject . ': '.get_bloginfo('name');
-        wp_mail($email, $subject, $message);
+        wp_mail($to, $subject, $message);
+        
+        return __('Email successfully sent!');
     }
+    return false;
 }
 
 /**
