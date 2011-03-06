@@ -214,7 +214,7 @@ function thatcamp_registrations_get_registration_by_applicant_email($applicant_e
 {
     global $wpdb;
     $registrations_table = $wpdb->prefix . "thatcamp_registrations";
-    $sql = "SELECT * from " . $registrations_table . " WHERE applicant_email = " .$applicant_email;
+    $sql = "SELECT * from " . $registrations_table . " WHERE applicant_email = '" .$applicant_email ."'";
     return $wpdb->get_row($sql, OBJECT);
 }
 

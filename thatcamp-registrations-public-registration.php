@@ -23,9 +23,9 @@ class Thatcamp_Registrations_Public_Registration {
     
     /**
      * Displays the registration information on the public site.
-     * 
-     * @todo - Check if the current authenticated user already has an application.
-     * 
+     *
+     * @todo - Refactor most of the logic for checking whether to display the
+     * user and application forms.
      **/
     function display_registration() {
         $alerts = array();
@@ -37,11 +37,13 @@ class Thatcamp_Registrations_Public_Registration {
             }
             
             // User email is required.
-            if (empty( $_POST['user_email'] )) {
+            if (!is_user_logged_in() && empty( $_POST['user_email'] )) {
                 $alerts['user_email'] = __('You must add an email address.', 'thatcamp-registrations');
             }
             
-            if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email($_POST['user_email'])) {
+            $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
+
+            if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email($userEmail)) {
                 $alerts['existing_application'] = __('Your have already registered with that email address.','thatcamp-registrations');
             }
             
@@ -50,7 +52,12 @@ class Thatcamp_Registrations_Public_Registration {
         // If user registration is required, and the user isn't logged in.
         if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
             echo '<div>You must have a user account to complete your application. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
-        } 
+        }
+        // If the currently authenticated user has submitted an application.
+        elseif (is_user_logged_in() && $existingApp = thatcamp_registrations_get_registration_by_user_id($this->current_user->ID)) {
+            echo '<div>'.__('Your have already registered!','thatcamp-registrations').'</div>';
+            
+        }
         elseif ((!empty($_POST)) && empty($alerts)) {
             thatcamp_registrations_add_registration();
             echo '<p>Your registration has been saved.</p>';
@@ -58,7 +65,9 @@ class Thatcamp_Registrations_Public_Registration {
         else {
             
             if (!empty($alerts)) {
-                echo '<p style="background:#fc0; padding: 4px;">There are errors with your form.</p>';
+                foreach ($alerts as $alert) {
+                    echo '<p style="background:#fc0; padding: 4px;">'.$alert.'</p>';
+                }
             }
             
             echo '<form method="post" action="">';
@@ -70,6 +79,7 @@ class Thatcamp_Registrations_Public_Registration {
                 $this->_user_info_form();
             } elseif (is_user_logged_in()) {
                 echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
+                echo '<input type="hidden" name="user_email" value="'. $this->current_user->user_email .'" />';
             }
             
             echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
