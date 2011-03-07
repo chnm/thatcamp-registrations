@@ -116,7 +116,6 @@ class Thatcamp_Registrations_Loader {
         		  	applicant_email varchar(255) NOT NULL,
         		  	applicant_info text NULL,
         			application_text text NOT NULL,
-        			additional_information text DEFAULT NULL,
         			status varchar(255) NOT NULL,
         		  	UNIQUE KEY id (id)
         		) {$charset_collate};";

@@ -105,28 +105,28 @@ class Thatcamp_Registrations_Public_Registration {
         </div>
         <div>
             <label for="user_url"><?php _e('Website'); ?></label><br/>
-            <input type="text" name="user_url" value="<?php echo @$this->current_user->user_url; ?>" />
             <p class="explanation"><?php _e('Example: thatcamp.org'); ?></p>
+            <input type="text" name="user_url" value="<?php echo @$this->current_user->user_url; ?>" />
         </div>
         <div>
             <label for="user_title"><?php _e('Position/Job Title', 'thatcamp-registrations'); ?></label><br/>
+            <p class="explanation"><?php _e('Examples: Assistant Professor, Instructional Technologist, Archivist, Software Engineer, Graduate student', 'thatcamp-registrations'); ?></p>
             <input type="text" name="user_title" value="<?php echo @$this->current_user->user_title; ?>" />
-            <p class="explanation"><?php _e('Examples: Assistant Professor, Instructional Technologist, Archivist, Software Engineer, Graduate student', 'thatcamp-registrations'); ?>
         </div>
         <div>
             <label for="user_organization"><?php _e('Organization', 'thatcamp-registrations'); ?></label><br />
-            <input type="text" name="organization" value="<?php echo @$this->current_user->user_organization; ?>" />
             <p class="explanation"><?php _e('Examples: George Mason University, New York Public Library, Automattic', 'thatcamp-registrations'); ?></p>
+            <input type="text" name="organization" value="<?php echo @$this->current_user->user_organization; ?>" />
         </div>
         <div>
             <label for="user_twitter"><?php _e('Twitter Screenname', 'thatcamp-registrations'); ?></label><br/>
-            <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" />
             <p class="explanation"><?php _e('Example: @thatcamp', 'thatcamp-registrations'); ?></p>
+            <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" />
         </div>
         <div>
             <label for="description"><?php _e('Bio'); ?></label><br/>
+            <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Zizek, your best score at Galaga, and so forth', 'thatcamp-registrations'); ?></p>
             <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
-            <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Zizek, your best score at Galaga, and so forth', 'thatcamp-registrations'); ?>
         </div>
     </fieldset>
     <?php
@@ -138,7 +138,6 @@ class Thatcamp_Registrations_Public_Registration {
         <legend>Application Information</legend>
     <div>
         <label for="application_text"><?php _e('Why do you want to come to THATCamp?', 'thatcamp-registrations'); ?>*</label><br />
-        <textarea cols="45" rows="8" name="application_text"><?php echo @$_POST['application_text']; ?></textarea>
         <p class="explanation">
         <?php _e('In a few sentences, no more than a couple of paragraphs, please 
         tell us why you want to come to THATCamp. You might tell us what task 
@@ -148,10 +147,7 @@ class Thatcamp_Registrations_Public_Registration {
         THATCamp is for working and talking with others, not for presenting to 
         a silent audience', 'thatcamp-registrations'); ?>
         </p>
-    </div>
-     <div> 
-        <label for="additional_information"><?php _e('Additional Information', 'thatcamp-registrations'); ?></label><br/>
-        <textarea cols="45" rows="8" name="additional_information"><?php echo @$_POST['additional_information']; ?></textarea>
+        <textarea cols="45" rows="8" name="application_text"><?php echo @$_POST['application_text']; ?></textarea>
     </div>
     <input type="hidden" name="date" value="<?php echo current_time('mysql'); ?>">
     
