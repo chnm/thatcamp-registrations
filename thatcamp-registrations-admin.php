@@ -270,7 +270,7 @@ class Thatcamp_Registrations_Admin {
                             <p class="description"><?php _e('If you wish THATCamp Registrations to automatically approve a certain number of applications, fill in that number here. If left blank, or set to 0, no applications will be automatically approved.', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
-                    <?php */
+                    <?php */ ?>
                     <tr valign="top">
                         <th scope="row"><label for="pending_application_email"><?php _e('Pending Application Email', 'thatcamp-registrations'); ?></label></th>
                         <td>
