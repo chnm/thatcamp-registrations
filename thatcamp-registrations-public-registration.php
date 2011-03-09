@@ -75,7 +75,7 @@ class Thatcamp_Registrations_Public_Registration {
             $this->_application_form();
             
             // If user login is not required, display the user info form.
-            if ( !thatcamp_registrations_user_required() ) {
+            if ( !thatcamp_registrations_user_required() && !is_user_logged_in()) {
                 $this->_user_info_form();
             } elseif (is_user_logged_in()) {
                 echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';

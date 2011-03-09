@@ -11,7 +11,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     global $wpdb;
     $table = $wpdb->prefix . "thatcamp_registrations";
     
-    $_POST = stripslashes_deep($_POST);
+    $_POST = stripslashes_deep($_POST);    
     
     // The user_id is set to the posted user ID, or null.
     $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : null;
@@ -34,14 +34,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         $applicant_info[$field] = isset($_POST[$field]) ? $_POST[$field] : null;
     }
     
-    // If the user_id is null, we don't have an authenticated user. So, we'll use the applicant_info
-    if ( $user_id == null ) {
-        // If there isn't a user_id, but a user exists with the posted email. Sneaky!
-        if ( $user_id = email_exists($_POST['applicant_email'])) {
-            thatcamp_registrations_process_user($user_id, $applicant_info);
-        }
-    }
-    
     $date = isset($_POST['date']) ? $_POST['date'] : null;
     $applicationText = isset($_POST['application_text']) ? $_POST['application_text'] : null;
     $bootcampSession = isset($_POST['bootcamp_session']) ? $_POST['bootcamp_session'] : null;
@@ -49,9 +41,9 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     // Lets serialize the applicant_info before putting it in the database.
     $applicant_info = maybe_serialize($applicant_info);
     $applicant_email = isset($_POST['user_email']) ? $_POST['user_email'] : null;
-    
-    if (($registration = thatcamp_registrations_get_registration_by_user_id($user_id) )
-        || ($registration = thatcamp_registrations_get_registration_by_applicant_email($applicant_email)) ) {
+        
+    if (   $registration = thatcamp_registrations_get_registration_by_user_id($user_id) 
+        || $registration = thatcamp_registrations_get_registration_by_applicant_email($applicant_email) ) {
             return 'You have already submitted an application.';
     } else {
         $wpdb->insert(
@@ -66,10 +58,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
                 )
             );
         thatcamp_registrations_send_applicant_email($applicant_email);
-
-        // Get and return the application ID
-        $applicationId = $wpdb->insert_id;
-        return $applicationId;
     }
 }
 
@@ -121,7 +109,7 @@ function thatcamp_registrations_process_registrations($ids = array(), $status) {
             );
         if ($status == 'approved' && thatcamp_registrations_create_user_accounts()) {
             foreach ($ids as $id) {
-                thatcamp_registrations_process_user(null, array(), $id);
+                thatcamp_registrations_process_user($id);
             }
         }
     }
@@ -151,7 +139,7 @@ function thatcamp_registrations_process_registration($id, $status) {
  * @param $registrationId
  * @return integer The User ID
  **/
-function thatcamp_registrations_process_user($userId = null, $userInfo = array(), $registrationId = null, $role = 'author') {
+function thatcamp_registrations_process_user($registrationId = null, $role = 'author') {
     global $wpdb;
     
     /**
@@ -159,18 +147,20 @@ function thatcamp_registrations_process_user($userId = null, $userInfo = array()
      * record! Booyah. We'll use the user_id and application_info colums from 
      * that record to process the user.
      */
+    
     if ($registration = thatcamp_registrations_get_registration_by_id($registrationId)) {        
-        $userId = $registration->user_id;
+        
         $userInfo = maybe_unserialize($registration->applicant_info);
-    } else {
-        // If we pass a User ID, we're probably dealing with an existing user.
-        if ($userId && !is_user_member_of_blog($userId)) {
+        $userId = $registration->user_id ? $registration->user_id : email_exists($registration->applicant_email);
+        
+        // If we have a valid a User ID, we're dealing with an existing user.
+        if ($userId) {
             add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
-        } else if ($userId = email_exists($userInfo->user_email)) {
-            thatcamp_registrations_update_user_data($userId, $userInfo);
-        } else { // We're probably dealing with a new user. Lets create one and associate it to our blog.
+        }
+        // We're probably dealing with a new user. Lets create one and associate it to our blog.
+        else {                 
             $randomPassword = wp_generate_password( 12, false );
-            $userEmail = $userInfo->user_email;
+            $userEmail = $registration->applicant_email;
             $userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
             add_user_to_blog($wpdb->blogid, $userId, $role);
             thatcamp_registrations_update_user_data($userId, $userInfo);

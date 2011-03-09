@@ -38,7 +38,7 @@ class Thatcamp_Registrations_Admin {
             if (isset($_POST['update_status'])) {
     			thatcamp_registrations_process_registration($_GET['id'], $_POST['status']);		    
     			if (isset($_POST['user_account']) && $_POST['user_account'] == 1) {
-    			    thatcamp_registrations_process_user(null, $applicant);
+    			    thatcamp_registrations_process_user($id);
     			}
     		}
         }                 
