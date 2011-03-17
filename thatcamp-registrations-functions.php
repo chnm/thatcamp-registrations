@@ -1,6 +1,4 @@
 <?php
-require_once(ABSPATH . WPINC . '/registration.php');
-
 /**
  * Adds a single registration entry. This is a motley function.
  * 
