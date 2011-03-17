@@ -40,6 +40,7 @@ class Thatcamp_Registrations_Admin {
     			if (isset($_POST['user_account']) && $_POST['user_account'] == 1) {
     			    thatcamp_registrations_process_user($id);
     			}
+                wp_redirect( get_admin_url() . 'admin.php?page=thatcamp-registrations&applicant_saved=1' );
     		}
         }                 
     ?>
@@ -96,12 +97,12 @@ class Thatcamp_Registrations_Admin {
             <h2><?php echo _e('THATCamp Registrations'); ?></h2>
             <?php if ($id): ?>
             <div id="thatcamp-registrations-panel">
-                <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations">Back to registrations list</a>
+                <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations&amp;noheader=true">Back to registrations list</a>
 
                 <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
                 <h4><?php _e( 'Application Status', 'thatcamp-registrations' ) ?></h4>
                 
-                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>" method="post">
+                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
                     <label for="user_account">Is Blog User?</label>
                     <select name="user_account">
                         <option value="0">No</option>
@@ -211,7 +212,6 @@ class Thatcamp_Registrations_Admin {
                 'open_registration'             =>  $_POST['open_registration'],
                 'create_user_accounts'          =>  $_POST['create_user_accounts'],
                 'require_login'                 =>  $_POST['require_login'],
-                'auto_approve_applications'     =>  is_numeric($_POST['auto_approve_applications']) ? $_POST['auto_approve_applications'] : '0',
                 'pending_application_email'     =>  $_POST['pending_application_email'],
                 'accepted_application_email'    =>  $_POST['accepted_application_email'],
                 'rejected_application_email'    =>  $_POST['rejected_application_email']
