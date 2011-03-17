@@ -34,7 +34,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     
     $date = isset($_POST['date']) ? $_POST['date'] : null;
     $applicationText = isset($_POST['application_text']) ? $_POST['application_text'] : null;
-    $bootcampSession = isset($_POST['bootcamp_session']) ? $_POST['bootcamp_session'] : null;
+    $bootcamp = isset($_POST['bootcamp']) ? '1' : null;
 
     // Lets serialize the applicant_info before putting it in the database.
     $applicant_info = maybe_serialize($applicant_info);
@@ -50,6 +50,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
                 'applicant_info'            => $applicant_info,
                 'applicant_email'           => $applicant_email,
                 'application_text'          => $applicationText,
+                'bootcamp'                  => $bootcamp,
                 'status'                    => $status,
                 'date'                      => $date,
                 'user_id'                   => $user_id

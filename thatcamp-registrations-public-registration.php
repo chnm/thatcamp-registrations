@@ -149,6 +149,9 @@ class Thatcamp_Registrations_Public_Registration {
         </p>
         <textarea cols="45" rows="8" name="application_text"><?php echo @$_POST['application_text']; ?></textarea>
     </div>
+    <div>
+        <label for="bootcamp"><input type="checkbox" name="bootcamp" value="1"> Yes, I'd like to attend Bootcamp!</label>
+    </div>
     <input type="hidden" name="date" value="<?php echo current_time('mysql'); ?>">
     
     </fieldset>
