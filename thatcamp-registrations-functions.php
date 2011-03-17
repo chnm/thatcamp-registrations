@@ -154,14 +154,18 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
         // If we have a valid a User ID, we're dealing with an existing user.
         if ($userId) {
             add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
+            wp_new_user_notification($userId);
         }
         // We're probably dealing with a new user. Lets create one and associate it to our blog.
         else {                 
             $randomPassword = wp_generate_password( 12, false );
             $userEmail = $registration->applicant_email;
-            $userId = wp_create_user( $userEmail, $randomPassword, $userEmail );
+            $uarray = split( '@', $userEmail );
+            $userName = sanitize_user( $uarray[0] );
+            $userId = wp_create_user( $userName, $randomPassword, $userEmail );
             add_user_to_blog($wpdb->blogid, $userId, $role);
             thatcamp_registrations_update_user_data($userId, $userInfo);
+            wp_new_user_notification($userId, $randomPassword);
         }
     }
     
