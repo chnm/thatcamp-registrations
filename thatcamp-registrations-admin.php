@@ -161,6 +161,7 @@ class Thatcamp_Registrations_Admin {
             $registrations = thatcamp_registrations_get_registrations(); 
             if ($registrations): ?>
             
+                <p>There are <?php echo count($registrations); ?> total registrations.</p>
                 <form action="" method="post">
                 
                 <table class="widefat fixed" cellspacing="0">
@@ -168,7 +169,6 @@ class Thatcamp_Registrations_Admin {
                 <tr class="thead">
                     <th>Applicant Name</th>
                     <th>Applicant Email</th>
-                    <th>Application Text</th>
                     <th>Bootcamp?</th>
                     <th>Status</th>
                     <th>View</th>
@@ -179,7 +179,6 @@ class Thatcamp_Registrations_Admin {
                 <tr class="thead">
                     <th>Applicant Name</th>
                     <th>Applicant Email</th>
-                    <th>Application Text</th>
                     <th>Bootcamp?</th>
                     <th>Status</th>
                     <th>View</th>
@@ -192,7 +191,6 @@ class Thatcamp_Registrations_Admin {
                         <?php $applicant = thatcamp_registrations_get_applicant_info($registration); ?>                      
                         <td><?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?></td>
                         <td><?php echo $applicant->user_email; ?></td>
-                        <td><?php echo $registration->application_text; ?></td>
                         <td><?php echo $registration->bootcamp ? 'Yes' : 'No'; ?></td>
                         <td><?php echo ucwords($registration->status); ?></td>
                         <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Application</a></td>
