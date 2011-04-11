@@ -78,6 +78,8 @@ function thatcamp_registrations_get_registrations($params = array()) {
         }
     } elseif ( isset($params['status']) && $status = $params['status']) {
         $sql .= " WHERE status = CONVERT( _utf8 '$status' USING latin1 )";
+    } elseif ( isset($params['bootcamp']) && $bootcamp = (int)$params['bootcamp']) {
+        $sql .= " WHERE bootcamp = '$bootcamp'";
     }
     
     // echo $sql; exit;

@@ -157,11 +157,12 @@ class Thatcamp_Registrations_Admin {
             <?php endif; ?>
             
             <?php 
-            
+            $bootcampRegistrations = thatcamp_registrations_get_registrations(array('bootcamp' => '1'));
             $registrations = thatcamp_registrations_get_registrations(); 
             if ($registrations): ?>
-            
+                
                 <p>There are <?php echo count($registrations); ?> total registrations.</p>
+                <p>There are <?php echo count($bootcampRegistrations); ?> total bootcamp registrations.</p>
                 <form action="" method="post">
                 
                 <table class="widefat fixed" cellspacing="0">
