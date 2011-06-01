@@ -13,9 +13,14 @@ class Thatcamp_Registrations_Public_Registration {
         $this->current_user = wp_get_current_user();
     }
     
+    
     function shortcode($attr) {
         if (thatcamp_registrations_option('open_registration') == 1) {
-            return $this->display_registration();
+            ob_start();
+            $this->display_registration();
+            $output_string = ob_get_contents();
+            ob_end_clean();
+            return $output_string;
         } else {
             return 'Registration is closed.';
         }
