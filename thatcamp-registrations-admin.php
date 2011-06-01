@@ -118,8 +118,6 @@ class Thatcamp_Registrations_Admin {
                 
                     <p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
 
-                    <label for="bootcamp"><input type="checkbox" name="bootcamp" value="1" <?php if($registration->bootcamp) { echo ' checked="checked"';} ?>>Interested in Bootcamp?</label>
-                    
                     <input type="submit" name="update_status" value="Update Status">
 
                 </form>
@@ -170,7 +168,6 @@ class Thatcamp_Registrations_Admin {
                 <tr class="thead">
                     <th>Applicant Name</th>
                     <th>Applicant Email</th>
-                    <th>Bootcamp?</th>
                     <th>Status</th>
                     <th>View</th>
                 </tr>
@@ -180,7 +177,6 @@ class Thatcamp_Registrations_Admin {
                 <tr class="thead">
                     <th>Applicant Name</th>
                     <th>Applicant Email</th>
-                    <th>Bootcamp?</th>
                     <th>Status</th>
                     <th>View</th>
                 </tr>
@@ -192,7 +188,6 @@ class Thatcamp_Registrations_Admin {
                         <?php $applicant = thatcamp_registrations_get_applicant_info($registration); ?>                      
                         <td><?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?></td>
                         <td><?php echo $applicant->user_email; ?></td>
-                        <td><?php echo $registration->bootcamp ? 'Yes' : 'No'; ?></td>
                         <td><?php echo ucwords($registration->status); ?></td>
                         <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Application</a></td>
                     </tr>
