@@ -37,8 +37,18 @@ class Thatcamp_Registrations_Public_Registration {
             }
             
             // User email is required.
-            if (!is_user_logged_in() && empty( $_POST['user_email'] )) {
-                $alerts['user_email'] = __('You must add an email address.', 'thatcamp-registrations');
+            if (!is_user_logged_in()) {
+                if ( empty( $_POST['first_name']) ) {
+                    $alerts['application_text'] = __('You must add a first name.', 'thatcamp-registrations');
+                }
+
+                if ( empty( $_POST['last_name']) ) {
+                    $alerts['application_text'] = __('You must add a last name.', 'thatcamp-registrations');
+                }
+                
+                if ( empty( $_POST['user_email'] ) ) {
+                    $alerts['user_email'] = __('You must add an email address.', 'thatcamp-registrations');
+                }
             }
             
             $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
