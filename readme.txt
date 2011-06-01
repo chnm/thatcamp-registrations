@@ -15,7 +15,7 @@ Visit [THATCamp Plugins](http://thatcamp.org/plugins "THATCamp Plugins") to lear
 
 == Installation ==
 
-The best way to install THATCamp Registerations is via the Add New link under Dashboard > Plugins.
+The best way to install THATCamp Registrations is via the Add New link under Dashboard > Plugins.
 
 To install THATCamp Registrations manually, follow these steps.
 
