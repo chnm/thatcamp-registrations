@@ -16,7 +16,7 @@ class Thatcamp_Registrations_Admin {
     function admin_menu() {
     	if ( function_exists( 'add_menu_page' ) ) {
     		add_menu_page(__('THATCamp Registrations', 'thatcamp-registrations'), __('THATCamp Registrations', 'thatcamp-registrations'), 'manage-options', 'thatcamp-registrations', array($this, 'registrations_display'));
-    		add_submenu_page( 'thatcamp-registrations', __('Settings for THATCamp Registrations', 'thatcamp-registrations'), __('Settings', 'thatcamp-registrations'), 'manage_options', 'thatcamp-registrations-settings', array($this, 'settings_display'));
+    		add_submenu_page( 'thatcamp-registrations', __('Settings for THATCamp registrations', 'thatcamp-registrations'), __('Settings', 'thatcamp-registrations'), 'manage_options', 'thatcamp-registrations-settings', array($this, 'settings_display'));
     	}
     }
 
@@ -100,15 +100,15 @@ class Thatcamp_Registrations_Admin {
                 <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations&amp;noheader=true">Back to registrations list</a>
 
                 <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
-                <h4><?php _e( 'Application Status', 'thatcamp-registrations' ) ?></h4>
+                <h4><?php _e( 'Application status', 'thatcamp-registrations' ) ?></h4>
                 
                 <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
-                    <label for="user_account">Is Blog User?</label>
+                    <label for="user_account">Applicant is already a site user?</label>
                     <select name="user_account">
                         <option value="0">No</option>
                         <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>>Yes</option>
                     </select>
-                    <p class="description"><?php _e('Applicant is a user?', 'thatcamp-registrations'); ?></p>
+                    <p class="description"><?php _e('Applicant is already a site user?', 'thatcamp-registrations'); ?></p>
 
                     <select name="status">
                         <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
@@ -230,7 +230,7 @@ class Thatcamp_Registrations_Admin {
             <form action="" method="post">
                 <table class="form-table">
                     <tr valign="top">
-                        <th scope="row"><label for="open_registration"><?php _e( 'Open Registration?', 'thatcamp-registrations' ) ?></label></th>
+                        <th scope="row"><label for="open_registration"><?php _e( 'Open registration?', 'thatcamp-registrations' ) ?></label></th>
                         <td>
                             <select name="open_registration">
                                 <option value="0"><?php _e('No'); ?> </option>
@@ -271,21 +271,21 @@ class Thatcamp_Registrations_Admin {
                     </tr>
                     <?php */ ?>
                     <tr valign="top">
-                        <th scope="row"><label for="pending_application_email"><?php _e('Pending Application Email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="pending_application_email"><?php _e('Pending application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="pending_application_email" rows="5" cols="50"><?php if( !empty($options['pending_application_email']) ) echo $options['pending_application_email']; ?></textarea>
                             
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><label for="accepted_application_email"><?php _e('Accepted Application Email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="accepted_application_email"><?php _e('Accepted application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
                             
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><label for="reject_application_email"><?php _e('Rejected Application Email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="reject_application_email"><?php _e('Rejected application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="rejected_application_email" rows="5" cols="50"><?php if( !empty($options['rejected_application_email']) ) echo $options['rejected_application_email']; ?></textarea>
                             
