@@ -15,7 +15,7 @@ class Thatcamp_Registrations_Admin {
 	
     function admin_menu() {
     	if ( function_exists( 'add_menu_page' ) ) {
-    		add_menu_page(__('THATCamp Registrations', 'thatcamp-registrations'), __('TC Registrations', 'thatcamp-registrations'), 'manage-options', 'thatcamp-registrations', array($this, 'registrations_display'));
+    		add_menu_page(__('THATCamp Registrations', 'thatcamp-registrations'), __('THATCamp Registrations', 'thatcamp-registrations'), 'manage-options', 'thatcamp-registrations', array($this, 'registrations_display'));
     		add_submenu_page( 'thatcamp-registrations', __('Settings for THATCamp Registrations', 'thatcamp-registrations'), __('Settings', 'thatcamp-registrations'), 'manage_options', 'thatcamp-registrations-settings', array($this, 'settings_display'));
     	}
     }
