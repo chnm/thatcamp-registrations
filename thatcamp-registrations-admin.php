@@ -119,8 +119,9 @@ class Thatcamp_Registrations_Admin {
                         <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>Yes</option>
                     </select>
                     </span>
-                    <h3><?php if($applicantUser == 1) echo ('Applicant is a user on this site'); ?></p>
-                    <h3><?php if($applicantUser == 0) echo ('Applicant will be made a site user upon approval'); ?></h3> 
+                    <h4><?php if($applicantUser == 1) echo ('Applicant is a user on this site'); ?></h4>
+                    <h4><?php if($applicantUser == 0) echo ('Applicant will be made a site user upon approval'); ?></h4> 
+                    <p class="description"><?php _e('Applicant is already a site user?', 'thatcamp-registrations'); ?></p>
 
                 </form>
 
