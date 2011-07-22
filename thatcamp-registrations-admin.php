@@ -279,20 +279,21 @@ class Thatcamp_Registrations_Admin {
                         <th scope="row"><label for="pending_application_email"><?php _e('Pending application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="pending_application_email" rows="5" cols="50"><?php if( !empty($options['pending_application_email']) ) echo $options['pending_application_email']; ?></textarea>
-                            
+                            <p class="description"><?php _e('If no text is entered, no e-mail will be sent.'); ?></p>                            
                         </td>
                     </tr>
                     <tr valign="top">
                         <th scope="row"><label for="accepted_application_email"><?php _e('Accepted application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
-                            
+                             <p class="description"><?php _e('If no text is entered, no e-mail will be sent.'); ?></p>                                                       
                         </td>
                     </tr>
                     <tr valign="top">
                         <th scope="row"><label for="reject_application_email"><?php _e('Rejected application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="rejected_application_email" rows="5" cols="50"><?php if( !empty($options['rejected_application_email']) ) echo $options['rejected_application_email']; ?></textarea>
+                            <p class="description"><?php _e('If no text is entered, no e-mail will be sent.'); ?></p>                            
                             
                         </td>
                     </tr>
