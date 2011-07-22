@@ -119,8 +119,8 @@ class Thatcamp_Registrations_Admin {
                     </span>
                     
                     <h3>Applicant Site User Account</h3>
-                    <p class="description"><?php if($applicantUser == 1) echo ('Applicant has a user account on this site'); ?></p>
-                    <p class="description"><?php if($applicantUser == 0) echo ('Applicant does not have a user account on this site -- change status to Approved to add applicant  to this site as a user'); ?></p>
+                    <p class="description"><?php if($applicantUser == 1) echo ('Applicant has a user account on this site.'); ?></p>
+                    <p class="description"><?php if($applicantUser == 0) echo ('Applicant does not have a user account on this site. If your THATCamp Registrations settings allow it, changing the applicant\'s status to Approved will add the applicant to this site as a user.'); ?></p>
                 </form>
 
                 <h3>Application Text</h3>
