@@ -251,7 +251,8 @@ class Thatcamp_Registrations_Admin {
                             <p class="description"><?php _e('If &#8220;Yes&#8221; the Registration form will create a user account after an application has been approved, if one does not exist for the email associated with the application. If no, registrations will not be associated with WordPress users.', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
-                    
+
+                    <?php /* Removing require login before registering because no one needs that. ?>                    
                     <tr valign="top">
                         <th scope="row"><label for="require_login"><?php _e( 'Require login before registering?', 'thatcamp-registrations' ) ?></label></th>
                         <td>
@@ -262,6 +263,8 @@ class Thatcamp_Registrations_Admin {
                             <p class="description"><?php _e('If &#8220;Yes&#8221; users will be required to log in before completing the registration form.'); ?></p>
                         </td>
                     </tr>
+                    <?php */ ?>
+
                     
                     <?php /* Removing auto-approve field until this feature works. ?>
                     <tr valign="top">
