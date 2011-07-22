@@ -97,21 +97,19 @@ class Thatcamp_Registrations_Admin {
             <h2><?php echo _e('THATCamp Registrations'); ?></h2>
             <?php if ($id): ?>
             <div id="thatcamp-registrations-panel">
-                <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations&amp;noheader=true">Back to registrations list</a>
+                <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations">Back to registrations list</a>
 
-                <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
+                <h2>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h2>
                 
-                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
-
+               <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
+                    <h3>Application Status</h3>
                     <select name="status">
                         <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
                         <option value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
                         <option value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
-                    </select>
-                
-                    <p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
-
-                    <input type="submit" name="update_status" value="Update Status"><br />
+                    </select>                
+                    
+                    <input type="submit" name="update_status" value="Update Status">
                     
                     <span style="display:none;">
                     <select name="user_account">
@@ -119,15 +117,16 @@ class Thatcamp_Registrations_Admin {
                         <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>Yes</option>
                     </select>
                     </span>
-                    <strong><?php if($applicantUser == 1) echo ('Applicant has a user account on this site'); ?></strong>
-                    <strong><?php if($applicantUser == 0) echo ('Applicant does not have a user account on this site'); ?></strong> 
-                    <p class="description"><?php _e('Applicant is already a site user?', 'thatcamp-registrations'); ?></p>
-
+                    
+                    <h3>Applicant Site User Account</h3>
+                    <p class="description"><?php if($applicantUser == 1) echo ('Applicant has a user account on this site'); ?></p>
+                    <p class="description"><?php if($applicantUser == 0) echo ('Applicant does not have a user account on this site -- change status to Approved to add applicant  to this site as a user'); ?></p>
                 </form>
 
-                <h4>Application Text</h4>
+                <h3>Application Text</h3>
                 <?php echo $registration->application_text; ?>
-                <h4>Additional Information?</h4>
+                
+                <h3>Additional Information</h3>
                 <?php echo $registration->additional_information; ?>
             </div>
             <?php
