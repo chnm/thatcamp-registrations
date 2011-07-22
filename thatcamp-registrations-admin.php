@@ -100,15 +100,8 @@ class Thatcamp_Registrations_Admin {
                 <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations&amp;noheader=true">Back to registrations list</a>
 
                 <h3>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h3>
-                <h4><?php _e( 'Application status', 'thatcamp-registrations' ) ?></h4>
                 
                 <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
-                    <label for="user_account">Applicant is already a site user?</label>
-                    <select name="user_account">
-                        <option value="0">No</option>
-                        <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>>Yes</option>
-                    </select>
-                    <p class="description"><?php _e('Applicant is already a site user?', 'thatcamp-registrations'); ?></p>
 
                     <select name="status">
                         <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
@@ -118,7 +111,16 @@ class Thatcamp_Registrations_Admin {
                 
                     <p class="description"><?php _e('The status of this application.', 'thatcamp-registrations'); ?></p>
 
-                    <input type="submit" name="update_status" value="Update Status">
+                    <input type="submit" name="update_status" value="Update Status"><br />
+                    
+                    <span style="display:none;">
+                    <select name="user_account">
+                        <option value="0">No</option>
+                        <option value="1"<?php if($applicantUser == 1) { echo ' selected="selected"';} ?>Yes</option>
+                    </select>
+                    </span>
+                    <h3><?php if($applicantUser == 1) echo ('Applicant is a user on this site'); ?></p>
+                    <h3><?php if($applicantUser == 0) echo ('Applicant will be made a site user upon approval'); ?></h3> 
 
                 </form>
 
