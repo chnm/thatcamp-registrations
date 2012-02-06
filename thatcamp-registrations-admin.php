@@ -92,6 +92,10 @@ class Thatcamp_Registrations_Admin {
             color: #D54E21;
             background: #f9f9f9;
         }
+        
+        h2, h3 {
+        margin-bottom: .25em;
+        }
     </style>
         <div class="wrap">
             <h2><?php echo _e('THATCamp Registrations'); ?></h2>
@@ -123,12 +127,24 @@ class Thatcamp_Registrations_Admin {
                     <p class="description"><?php if($applicantUser == 0) echo ('Applicant does not have a user account on this site. If your THATCamp Registrations settings allow it, changing the applicant\'s status to Approved will add the applicant to this site as a user.'); ?></p>
                 </form>
 
-                <h3>Application Text</h3>
-                <?php echo $registration->application_text; ?>
+                	<h3>Application Text</h3>
+                	<?php echo $registration->application_text; ?>
                 
-                <h3>Additional Information</h3>
-                <?php echo $registration->additional_information; ?>
-            </div>
+                	<h3>Biography</h3>
+		<?php echo $applicant->description; ?>
+		
+		<h3>Website</h3>
+		<?php echo $applicant->user_url; ?>
+		
+		<h3>Twitter</h3>
+		<?php echo $applicant->user_twitter; ?>
+		
+		<h3>Title</h3> 
+		<?php echo $applicant->user_title; ?>
+		
+		<h3>Organization</h3>
+		<?php echo $applicant->user_organization; ?>
+</div>
             <?php
             // Otherwise, we need to view the list of applications.
             else:
@@ -279,21 +295,21 @@ class Thatcamp_Registrations_Admin {
                         <th scope="row"><label for="pending_application_email"><?php _e('Pending application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="pending_application_email" rows="5" cols="50"><?php if( !empty($options['pending_application_email']) ) echo $options['pending_application_email']; ?></textarea>
-                            <p class="description"><?php _e('If no text is entered, no e-mail will be sent.'); ?></p>                            
+                            <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                            
                         </td>
                     </tr>
                     <tr valign="top">
                         <th scope="row"><label for="accepted_application_email"><?php _e('Accepted application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
-                             <p class="description"><?php _e('If no text is entered, no e-mail will be sent.'); ?></p>                                                       
+                             <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                                                       
                         </td>
                     </tr>
                     <tr valign="top">
                         <th scope="row"><label for="reject_application_email"><?php _e('Rejected application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="rejected_application_email" rows="5" cols="50"><?php if( !empty($options['rejected_application_email']) ) echo $options['rejected_application_email']; ?></textarea>
-                            <p class="description"><?php _e('If no text is entered, no e-mail will be sent.'); ?></p>                            
+                            <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                            
                             
                         </td>
                     </tr>
