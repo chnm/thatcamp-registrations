@@ -3,8 +3,8 @@
 Plugin Name: THATCamp Registrations
 Plugin URI: http://thatcamp.org
 Description: Manages registrations for events.
-Version: 1.0-alpha
-Author: Center for History and New Media
+Version: 1.1
+Author: Roy Rosenzweig Center for History and New Media
 Author URI: http://chnm.gmu.edu
 */
 

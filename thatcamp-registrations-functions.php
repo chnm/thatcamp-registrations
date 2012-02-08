@@ -4,8 +4,8 @@
  * 
  * @param string The status of the registration record.
  **/
-function thatcamp_registrations_add_registration($status = 'pending') {
-    
+function thatcamp_registrations_add_registration($status = 'pending') { 
+ 
     global $wpdb;
     $table = $wpdb->prefix . "thatcamp_registrations";
     
@@ -23,9 +23,12 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         'user_email',
         'user_url',
         'description',
+        'previous_thatcamps',
         'user_title',
         'user_organization',
-        'user_twitter'
+        'user_twitter',
+        'tshirt_size',
+        'dietary_preferences'
     );
     
     foreach ( $applicant_fields as $field) {
@@ -35,7 +38,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     $date = isset($_POST['date']) ? $_POST['date'] : null;
     $applicationText = isset($_POST['application_text']) ? $_POST['application_text'] : null;
 
-    // Lets serialize the applicant_info before putting it in the database.
+    // Let's serialize the applicant_info before putting it in the database.
     $applicant_info = maybe_serialize($applicant_info);
     $applicant_email = isset($_POST['user_email']) ? $_POST['user_email'] : null;
         
@@ -84,7 +87,7 @@ function thatcamp_registrations_get_registrations($params = array()) {
 }
 
 /**
- * Processes an array of registrations based on ID. Uses mainly in the admin.
+ * Processes an array of registrations based on ID. Used mainly in the admin.
  * 
  * @param array The IDs of the registration records.
  * @param string The status for the registration records.
@@ -141,7 +144,7 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
     
     /**
      * If the Registration ID is set, it means we already have a registration 
-     * record! Booyah. We'll use the user_id and application_info colums from 
+     * record! Booyah. We'll use the user_id and application_info columns from 
      * that record to process the user.
      */
     
@@ -155,7 +158,7 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
             add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
             wp_new_user_notification($userId);
         }
-        // We're probably dealing with a new user. Lets create one and associate it to our blog.
+        // We're probably dealing with a new user. Let's create one and associate it to our blog.
         else {                 
             $randomPassword = wp_generate_password( 12, false );
             $userEmail = $registration->applicant_email;
@@ -172,11 +175,12 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
 }
 
 /**
- * Updates the user data.
- *
+ * Updates the user data. 
+ * Note: this needs to be altered so that user_url goes in the wp_users table and not the wp_usermeta table. --AF Sample: wp_update_user( array ('ID' => $user_id, 'user_url' => 'http://www.site.com' ) ) ; and http://wordpress.org/support/topic/wordpress-33-update_user_meta-and-wp_userswp_usermeta-issue?replies=8 
  **/
 function thatcamp_registrations_update_user_data($userId, $params)
 {
+
     if ( isset( $userId ) && $userData = get_userdata($userId) ) {
         foreach ($params as $key => $value) {
             update_user_meta( $userId, $key, $value );
