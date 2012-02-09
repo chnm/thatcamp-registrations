@@ -6,8 +6,9 @@ class Thatcamp_Registrations_Public_Registration {
     
     private $options;
     private $current_user;
-    
-    function thatcamp_registrations_public_registration() {
+
+    function thatcamp_registrations_public_registration() { 
+      
         add_shortcode('thatcamp-registration', array($this, 'shortcode'));  
         $this->options = get_option('thatcamp_registrations_options');  
         $this->current_user = wp_get_current_user();
@@ -59,7 +60,7 @@ class Thatcamp_Registrations_Public_Registration {
             $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
 
             if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email($userEmail)) {
-                $alerts['existing_application'] = __('Your have already registered with that email address.','thatcamp-registrations');
+                $alerts['existing_application'] = __('You have already registered with that email address.','thatcamp-registrations');
             }
             
         }
@@ -70,7 +71,7 @@ class Thatcamp_Registrations_Public_Registration {
         }
         // If the currently authenticated user has submitted an application.
         elseif (is_user_logged_in() && $existingApp = thatcamp_registrations_get_registration_by_user_id($this->current_user->ID)) {
-            echo '<div>'.__('Your have already registered!','thatcamp-registrations').'</div>';
+            echo '<div>'.__('You have already registered!','thatcamp-registrations').'</div>';
             
         }
         elseif ((!empty($_POST)) && empty($alerts)) {
@@ -107,21 +108,36 @@ class Thatcamp_Registrations_Public_Registration {
     <fieldset>
         <legend>Personal Information</legend>
         <div>
-            <label for="first_name"><?php _e('First Name'); ?></label><br/>
+            <label for="first_name"><?php _e('First Name'); ?></label><br />
             <input type="text" name="first_name" value="<?php echo $this->current_user->first_name; ?>" />
         </div>
         <div>
-            <label for="last_name"><?php _e('Last Name'); ?></label><br/>
+            <label for="last_name"><?php _e('Last Name'); ?></label><br />
             <input type="text" name="last_name" value="<?php echo @$this->current_user->last_name; ?>" />
         </div>
         <div>
-            <label for="user_email"><?php _e('Email'); ?></label><br/>
+            <label for="user_email"><?php _e('Email'); ?></label><br />
             <input type="text" name="user_email" value="<?php echo @$this->current_user->user_email; ?>" />
         </div>
         <div>
-            <label for="user_url"><?php _e('Website'); ?></label><br/>
+            <label for="user_url"><?php _e('Website'); ?></label><br />
             <p class="explanation"><?php _e('Example: thatcamp.org'); ?></p>
             <input type="text" name="user_url" value="<?php echo @$this->current_user->user_url; ?>" />
+        </div>
+        <div>
+            <label for="user_twitter"><?php _e('Twitter Screenname', 'thatcamp-registrations'); ?></label><br />
+            <p class="explanation"><?php _e('Example: @thatcamp', 'thatcamp-registrations'); ?></p>
+            <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" />
+        </div>
+        <div>
+            <label for="previous_thatcamps"><?php _e('Number of previous THATCamps attended'); ?></label><br />
+            <p class="explanation"><?php _e('How many THATCamps have you been to before?', 'thatcamp-registrations'); ?></p>
+	<select name="previous_thatcamps" value="<?php echo @$this->current_user->previous_thatcamps; ?>">
+	<option>Select an answer</option>
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="More than one">More than one</option>
+	</select>
         </div>
         <div>
             <label for="user_title"><?php _e('Position/Job Title', 'thatcamp-registrations'); ?></label><br/>
@@ -131,17 +147,33 @@ class Thatcamp_Registrations_Public_Registration {
         <div>
             <label for="user_organization"><?php _e('Organization', 'thatcamp-registrations'); ?></label><br />
             <p class="explanation"><?php _e('Examples: George Mason University, New York Public Library, Automattic', 'thatcamp-registrations'); ?></p>
-            <input type="text" name="organization" value="<?php echo @$this->current_user->user_organization; ?>" />
+            <input type="text" name="user_organization" value="<?php echo @$this->current_user->user_organization; ?>" />
         </div>
         <div>
-            <label for="user_twitter"><?php _e('Twitter Screenname', 'thatcamp-registrations'); ?></label><br/>
-            <p class="explanation"><?php _e('Example: @thatcamp', 'thatcamp-registrations'); ?></p>
-            <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" />
-        </div>
-        <div>
-            <label for="description"><?php _e('Bio'); ?></label><br/>
-            <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Zizek, your best score at Galaga, and so forth', 'thatcamp-registrations'); ?></p>
+            <label for="description"><?php _e('Biography'); ?></label><br/>
+            <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Zizek, your best score at Galaga, and so forth.', 'thatcamp-registrations'); ?></p>
             <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
+        </div>
+        <div>
+          <label for="tshirt_size"><?php _e('T-shirt Size (not all THATCamps provide t-shirts, but many do)', 'thatcamp-registrations'); ?></label><br/>
+	<select name="tshirt_size" value="<?php echo @$this->current_user->tshirt_size; ?>">
+	<option>Select a t-shirt size</option>
+	<option value="mens_s">Men's Small</option>
+	<option value="mens_m">Men's Medium</option>
+	<option value="mens_l">Men's Large</option>
+	<option value="mens_xl">Men's Extra Large</option>
+	<option value="mens_xxl">Men's Extra Extra Large</option>
+	<option value="womens_s">Women's Small</option>
+	<option value="womens_m">Women's Medium</option>
+	<option value="womens_l">Women's Large</option>
+	<option value="womens_xl">Women's Extra Large</option>
+	<option value="womens_xxl">Women's Extra Extra Large</option>
+	</select>        
+	</div>
+        <div>
+            <label for="dietary_preferences"><?php _e('Dietary Preferences'); ?></label><br/>
+            <p class="explanation"><?php _e('Let us know if you have dietary needs or preferences.', 'thatcamp-registrations'); ?></p>
+            <textarea cols="45" rows="8" name="dietary_preferences"><?php echo @$this->current_user->dietary_preferences; ?></textarea>
         </div>
     </fieldset>
     <?php
@@ -160,7 +192,7 @@ class Thatcamp_Registrations_Public_Registration {
         perspective you want to understand, what issue you want to discuss, or 
         what skill you want to learn. Remember, though: no paper proposals! 
         THATCamp is for working and talking with others, not for presenting to 
-        a silent audience', 'thatcamp-registrations'); ?>
+        a silent audience.', 'thatcamp-registrations'); ?>
         </p>
         <textarea cols="45" rows="8" name="application_text"><?php echo @$_POST['application_text']; ?></textarea>
     </div>
