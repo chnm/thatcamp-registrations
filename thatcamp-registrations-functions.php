@@ -160,32 +160,19 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
         }
         // We're probably dealing with a new user. Let's create one and associate it to our blog.
         else {                 
-            $randomPassword = wp_generate_password( 12, false );
             $userEmail = $registration->applicant_email;
             $uarray = split( '@', $userEmail );
             $userName = sanitize_user( $uarray[0] );
-            $userId = wp_create_user( $userName, $randomPassword, $userEmail );
+            $userInfo['user_login'] = $userName;
+            $userInfo['user_email'] = $userEmail;
+
+            $userId = wp_insert_user( $userInfo );
             add_user_to_blog($wpdb->blogid, $userId, $role);
-            thatcamp_registrations_update_user_data($userId, $userInfo);
-            wp_new_user_notification($userId, $randomPassword);
+            wp_new_user_notification($userId);
         }
     }
     
     return $userId;
-}
-
-/**
- * Updates the user data. 
- * Note: this needs to be altered so that user_url goes in the wp_users table and not the wp_usermeta table. --AF Sample: wp_update_user( array ('ID' => $user_id, 'user_url' => 'http://www.site.com' ) ) ; and http://wordpress.org/support/topic/wordpress-33-update_user_meta-and-wp_userswp_usermeta-issue?replies=8 
- **/
-function thatcamp_registrations_update_user_data($userId, $params)
-{
-
-    if ( isset( $userId ) && $userData = get_userdata($userId) ) {
-        foreach ($params as $key => $value) {
-            update_user_meta( $userId, $key, $value );
-        }
-    } 
 }
 
 /**
