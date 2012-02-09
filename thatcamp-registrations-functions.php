@@ -4,8 +4,8 @@
  * 
  * @param string The status of the registration record.
  **/
-function thatcamp_registrations_add_registration($status = 'pending') { 
- 
+function thatcamp_registrations_add_registration($status = 'pending') {
+    
     global $wpdb;
     $table = $wpdb->prefix . "thatcamp_registrations";
     
@@ -38,7 +38,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     $date = isset($_POST['date']) ? $_POST['date'] : null;
     $applicationText = isset($_POST['application_text']) ? $_POST['application_text'] : null;
 
-    // Let's serialize the applicant_info before putting it in the database.
+    // Lets serialize the applicant_info before putting it in the database.
     $applicant_info = maybe_serialize($applicant_info);
     $applicant_email = isset($_POST['user_email']) ? $_POST['user_email'] : null;
         
@@ -87,7 +87,7 @@ function thatcamp_registrations_get_registrations($params = array()) {
 }
 
 /**
- * Processes an array of registrations based on ID. Used mainly in the admin.
+ * Processes an array of registrations based on ID. Uses mainly in the admin.
  * 
  * @param array The IDs of the registration records.
  * @param string The status for the registration records.
@@ -144,7 +144,7 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
     
     /**
      * If the Registration ID is set, it means we already have a registration 
-     * record! Booyah. We'll use the user_id and application_info columns from 
+     * record! Booyah. We'll use the user_id and application_info colums from 
      * that record to process the user.
      */
     
@@ -158,21 +158,35 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
             add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
             wp_new_user_notification($userId);
         }
-        // We're probably dealing with a new user. Let's create one and associate it to our blog.
+        // We're probably dealing with a new user. Lets create one and associate it to our blog.
         else {                 
+            $randomPassword = wp_generate_password( 12, false );
             $userEmail = $registration->applicant_email;
             $uarray = split( '@', $userEmail );
             $userName = sanitize_user( $uarray[0] );
             $userInfo['user_login'] = $userName;
             $userInfo['user_email'] = $userEmail;
-
             $userId = wp_insert_user( $userInfo );
             add_user_to_blog($wpdb->blogid, $userId, $role);
-            wp_new_user_notification($userId);
+            thatcamp_registrations_update_user_data($userId, $userInfo);
+            wp_new_user_notification($userId, $randomPassword);
         }
     }
     
     return $userId;
+}
+
+/**
+ * Updates the user data.
+ *
+ **/
+function thatcamp_registrations_update_user_data($userId, $params)
+{
+    if ( isset( $userId ) && $userData = get_userdata($userId) ) {
+        foreach ($params as $key => $value) {
+            update_user_meta( $userId, $key, $value );
+        }
+    } 
 }
 
 /**
