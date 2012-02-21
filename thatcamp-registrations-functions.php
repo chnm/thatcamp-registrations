@@ -166,6 +166,7 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
             $userName = sanitize_user( $uarray[0] );
             $userInfo['user_login'] = $userName;
             $userInfo['user_email'] = $userEmail;
+            $userInfo['user_pass']  = $randomPassword;
             $userId = wp_insert_user( $userInfo );
             add_user_to_blog($wpdb->blogid, $userId, $role);
             thatcamp_registrations_update_user_data($userId, $userInfo);
