@@ -112,6 +112,17 @@ function thatcamp_registrations_process_registrations($ids = array(), $status) {
                 thatcamp_registrations_process_user($id);
             }
         }
+        
+        // Notify the user of the change
+        if ( 'approved' == $status || 'rejected' == $status ) {
+        	// Don't send 'pending' emails - they are send by the registration process
+        	// @see thatcamp_registrations_add_registration() 
+        	$registration_data = thatcamp_registrations_get_registration_by_id( $id );
+        	
+        	if ( !empty( $registration_data->applicant_email ) ) {
+			thatcamp_registrations_send_applicant_email( $registration_data->applicant_email, $status ); 
+		}
+        }
     }
     
     return;
