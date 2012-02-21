@@ -109,9 +109,9 @@ class Thatcamp_Registrations_Admin {
                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
                     <h3>Application Status</h3>
                     <select name="status">
-                        <option value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
-                        <option value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
-                        <option value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
+                        <option name="pending" id="pending" value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
+                        <option name="approved" id="approved" value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
+                        <option name="rejected" id="rejected" value="rejected"<?php if($registration->status == "rejected") { echo ' selected="selected"';} ?>><?php _e('Rejected', 'thatcamp-registrations'); ?> </option>
                     </select>                
                     
                     <input type="submit" name="update_status" value="Update Status">
@@ -130,6 +130,8 @@ class Thatcamp_Registrations_Admin {
 
                 	<h3>Application Text</h3>
                 	<?php echo $registration->application_text; ?>
+                	
+                	<?php echo $registration->additional_information; ?>
                 	
                 	<h3>Previous THATCamps</h3>
                 	<?php echo $applicant->previous_thatcamps; ?>
@@ -190,7 +192,6 @@ class Thatcamp_Registrations_Admin {
             if ($registrations): ?>
                 
                 <p>There are <?php echo count($registrations); ?> total registrations.</p>
-                <p>There are <?php echo count($bootcampRegistrations); ?> total bootcamp registrations.</p>
                 <form action="" method="post">
                 
                 <table class="widefat fixed" cellspacing="0">
@@ -306,21 +307,21 @@ class Thatcamp_Registrations_Admin {
                     <tr valign="top">
                         <th scope="row"><label for="pending_application_email"><?php _e('Pending application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
-                            <textarea name="pending_application_email" rows="5" cols="50"><?php if( !empty($options['pending_application_email']) ) echo $options['pending_application_email']; ?></textarea>
+                            <textarea name="pending_application_email" id="pending_application_email" rows="5" cols="50"><?php if( !empty($options['pending_application_email']) ) echo $options['pending_application_email']; ?></textarea>
                             <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                            
                         </td>
                     </tr>
                     <tr valign="top">
                         <th scope="row"><label for="accepted_application_email"><?php _e('Accepted application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
-                            <textarea name="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
+                            <textarea name="accepted_application_email" id="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
                              <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                                                       
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><label for="reject_application_email"><?php _e('Rejected application email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="rejected_application_email"><?php _e('Rejected application email', 'thatcamp-registrations'); ?></label></th>
                         <td>
-                            <textarea name="rejected_application_email" rows="5" cols="50"><?php if( !empty($options['rejected_application_email']) ) echo $options['rejected_application_email']; ?></textarea>
+                            <textarea name="rejected_application_email" id="rejected_application_email" rows="5" cols="50"><?php if( !empty($options['rejected_application_email']) ) echo $options['rejected_application_email']; ?></textarea>
                             <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                            
                             
                         </td>

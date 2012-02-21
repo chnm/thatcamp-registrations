@@ -6,9 +6,8 @@ class Thatcamp_Registrations_Public_Registration {
     
     private $options;
     private $current_user;
-
-    function thatcamp_registrations_public_registration() { 
-      
+    
+    function thatcamp_registrations_public_registration() {
         add_shortcode('thatcamp-registration', array($this, 'shortcode'));  
         $this->options = get_option('thatcamp_registrations_options');  
         $this->current_user = wp_get_current_user();
@@ -60,7 +59,7 @@ class Thatcamp_Registrations_Public_Registration {
             $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
 
             if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email($userEmail)) {
-                $alerts['existing_application'] = __('You have already registered with that email address.','thatcamp-registrations');
+                $alerts['existing_application'] = __('Your have already registered with that email address.','thatcamp-registrations');
             }
             
         }
@@ -71,7 +70,7 @@ class Thatcamp_Registrations_Public_Registration {
         }
         // If the currently authenticated user has submitted an application.
         elseif (is_user_logged_in() && $existingApp = thatcamp_registrations_get_registration_by_user_id($this->current_user->ID)) {
-            echo '<div>'.__('You have already registered!','thatcamp-registrations').'</div>';
+            echo '<div>'.__('Your have already registered!','thatcamp-registrations').'</div>';
             
         }
         elseif ((!empty($_POST)) && empty($alerts)) {
@@ -109,25 +108,25 @@ class Thatcamp_Registrations_Public_Registration {
         <legend>Personal Information</legend>
         <div>
             <label for="first_name"><?php _e('First Name'); ?></label><br />
-            <input type="text" name="first_name" value="<?php echo $this->current_user->first_name; ?>" />
+            <input type="text" name="first_name" value="<?php echo $this->current_user->first_name; ?>" class="textfield" />
         </div>
         <div>
             <label for="last_name"><?php _e('Last Name'); ?></label><br />
-            <input type="text" name="last_name" value="<?php echo @$this->current_user->last_name; ?>" />
+            <input type="text" name="last_name" value="<?php echo @$this->current_user->last_name; ?>" class="textfield" />
         </div>
         <div>
             <label for="user_email"><?php _e('Email'); ?></label><br />
-            <input type="text" name="user_email" value="<?php echo @$this->current_user->user_email; ?>" />
+            <input type="text" name="user_email" value="<?php echo @$this->current_user->user_email; ?>" class="textfield" />
         </div>
         <div>
             <label for="user_url"><?php _e('Website'); ?></label><br />
             <p class="explanation"><?php _e('Example: thatcamp.org'); ?></p>
-            <input type="text" name="user_url" value="<?php echo @$this->current_user->user_url; ?>" />
+            <input type="text" name="user_url" value="<?php echo @$this->current_user->user_url; ?>" class="textfield" />
         </div>
         <div>
             <label for="user_twitter"><?php _e('Twitter Screenname', 'thatcamp-registrations'); ?></label><br />
             <p class="explanation"><?php _e('Example: @thatcamp', 'thatcamp-registrations'); ?></p>
-            <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" />
+            <input type="text" name="user_twitter" value="<?php echo @$this->current_user->user_twitter; ?>" class="textfield" />
         </div>
         <div>
             <label for="previous_thatcamps"><?php _e('Number of previous THATCamps attended'); ?></label><br />
@@ -142,16 +141,16 @@ class Thatcamp_Registrations_Public_Registration {
         <div>
             <label for="user_title"><?php _e('Position/Job Title', 'thatcamp-registrations'); ?></label><br/>
             <p class="explanation"><?php _e('Examples: Assistant Professor, Instructional Technologist, Archivist, Software Engineer, Graduate student', 'thatcamp-registrations'); ?></p>
-            <input type="text" name="user_title" value="<?php echo @$this->current_user->user_title; ?>" />
+            <input type="text" name="user_title" value="<?php echo @$this->current_user->user_title; ?>" class="textfield" />
         </div>
         <div>
             <label for="user_organization"><?php _e('Organization', 'thatcamp-registrations'); ?></label><br />
             <p class="explanation"><?php _e('Examples: George Mason University, New York Public Library, Automattic', 'thatcamp-registrations'); ?></p>
-            <input type="text" name="user_organization" value="<?php echo @$this->current_user->user_organization; ?>" />
+            <input type="text" name="user_organization" value="<?php echo @$this->current_user->user_organization; ?>" class="textfield" />
         </div>
         <div>
             <label for="description"><?php _e('Biography'); ?></label><br/>
-            <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Zizek, your best score at Galaga, and so forth.', 'thatcamp-registrations'); ?></p>
+            <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Žižek, your best score at Galaga, and so forth.', 'thatcamp-registrations'); ?></p>
             <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
         </div>
         <div>
