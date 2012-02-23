@@ -173,9 +173,19 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
         else {                 
             $randomPassword = wp_generate_password( 12, false );
             $userEmail = $registration->applicant_email;
+            
+            // Get a sanitized and unique username
             $uarray = split( '@', $userEmail );
-            $userName = sanitize_user( $uarray[0] );
-            $userInfo['user_login'] = $userName;
+            $userName = sanitize_user( $uarray[0], true ); // Use strict to get rid of nastiness
+	    $unique_user_name = apply_filters( 'pre_user_login', $userName );
+	    
+            // Guarantee unique usernames
+            while ( username_exists( $unique_user_name ) ) {
+            	$append = isset( $append ) ? $append + 1 : 1;
+            	$unique_user_name = $userName . $append;
+            }
+            
+            $userInfo['user_login'] = $unique_user_name;
             $userInfo['user_email'] = $userEmail;
             $userInfo['user_pass']  = $randomPassword;
             $userId = wp_insert_user( $userInfo );
