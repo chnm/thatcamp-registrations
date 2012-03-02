@@ -38,7 +38,7 @@ class Thatcamp_Registrations_Public_Registration {
         if ( !empty($_POST) ) {
             // Application text is required.
             if ( empty( $_POST['application_text']) ) {
-                $alerts['application_text'] = __('Please tell us why you want to come to THATCamp.', 'thatcamp-registrations');
+                $alerts['application_text'] = __('You must add application text.', 'thatcamp-registrations');
             }
             
             // User email is required.
@@ -59,23 +59,23 @@ class Thatcamp_Registrations_Public_Registration {
             $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
 
             if ($existingApp = thatcamp_registrations_get_registration_by_applicant_email($userEmail)) {
-                $alerts['existing_application'] = __('You have already submitted the form with that email address.','thatcamp-registrations');
+                $alerts['existing_application'] = __('Your have already registered with that email address.','thatcamp-registrations');
             }
             
         }
         
         // If user registration is required, and the user isn't logged in.
         if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
-            echo '<div>You must have a user account to complete the form. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
+            echo '<div>You must have a user account to complete your application. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
         }
         // If the currently authenticated user has submitted an application.
         elseif (is_user_logged_in() && $existingApp = thatcamp_registrations_get_registration_by_user_id($this->current_user->ID)) {
-            echo '<div>'.__('You have already submitted the form.','thatcamp-registrations').'</div>';
+            echo '<div>'.__('Your have already registered!','thatcamp-registrations').'</div>';
             
         }
         elseif ((!empty($_POST)) && empty($alerts)) {
             thatcamp_registrations_add_registration();
-            echo '<p>The information you submitted has been saved.</p>';
+            echo '<p>Your registration has been saved.</p>';
         }
         else {
             
