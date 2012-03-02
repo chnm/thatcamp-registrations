@@ -38,7 +38,7 @@ class Thatcamp_Registrations_Public_Registration {
         if ( !empty($_POST) ) {
             // Application text is required.
             if ( empty( $_POST['application_text']) ) {
-                $alerts['application_text'] = __('Please tell us why you want to come to THATCamp.', 'thatcamp-registrations');
+                $alerts['application_text'] = __('Please tell us why you want to come to THATCamp. What you write here will NOT be publicly displayed.', 'thatcamp-registrations');
             }
             
             // User email is required.
@@ -104,18 +104,19 @@ class Thatcamp_Registrations_Public_Registration {
     
     function _user_info_form() {
     ?>
+    <p class="explanation" style="margin: 1em 0 1em 0;">Please note that the following pieces of information may be displayed publicly on this website: <strong>First Name</strong>, <strong>Last Name</strong>, <strong>Website</strong>, <strong>Twitter Screenname</strong>, <strong>Position / Job Title</strong>, <strong>Organization</strong>, and <strong>Biography</strong>. We will not display your e-mail address or your reasons for coming to THATCamp.  
     <fieldset>
         <legend>Personal Information</legend>
         <div>
-            <label for="first_name"><?php _e('First Name'); ?></label><br />
+            <label for="first_name"><?php _e('First Name'); ?>*</label><br />
             <input type="text" name="first_name" value="<?php echo $this->current_user->first_name; ?>" class="textfield" />
         </div>
         <div>
-            <label for="last_name"><?php _e('Last Name'); ?></label><br />
+            <label for="last_name"><?php _e('Last Name'); ?>*</label><br />
             <input type="text" name="last_name" value="<?php echo @$this->current_user->last_name; ?>" class="textfield" />
         </div>
         <div>
-            <label for="user_email"><?php _e('Email'); ?></label><br />
+            <label for="user_email"><?php _e('Email'); ?>*</label><br />
             <input type="text" name="user_email" value="<?php echo @$this->current_user->user_email; ?>" class="textfield" />
         </div>
         <div>
