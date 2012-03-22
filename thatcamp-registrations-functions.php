@@ -44,7 +44,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         
     if (   $registration = thatcamp_registrations_get_registration_by_user_id($user_id) 
         || $registration = thatcamp_registrations_get_registration_by_applicant_email($applicant_email) ) {
-            return 'You have already submitted an application.';
+            return 'You have already submitted your registration.';
     } else {
         $wpdb->insert(
             $table,
@@ -324,25 +324,25 @@ function thatcamp_registrations_get_applicant_info($registration)
  * Send a notification email to a THATCamp Registrations applicant
  *
  * @param string The applicant email address.
- * @param string The status of the application. Options are 'pending',
- * 'approved', and 'rejected. Default is pending.
+ * @param string The status of the registration. Options are 'pending',
+ * 'approved', and 'rejected'. Default is pending.
  */
 function thatcamp_registrations_send_applicant_email($to, $status = "pending")
 {
     if (is_email($to)) {
         switch ($status) {
             case 'approved':
-                $subject = __('Application Approved', 'thatcamp-registrations');
+                $subject = __('Registration Approved', 'thatcamp-registrations');
                 $message = thatcamp_registrations_option('accepted_application_email');
             break;
             
             case 'rejected':
-                $subject = __('Application Rejected', 'thatcamp-registrations');
+                $subject = __('Registration Rejected', 'thatcamp-registrations');
                 $message = thatcamp_registrations_option('rejected_application_email');
             break;
             case 'pending':
             default:
-                $subject = __('Application Pending', 'thatcamp-registrations');
+                $subject = __('Registration Pending', 'thatcamp-registrations');
                 $message = thatcamp_registrations_option('pending_application_email');
             break;
         }
@@ -356,7 +356,7 @@ function thatcamp_registrations_send_applicant_email($to, $status = "pending")
 }
 
 /**
- * Checks the option to create user accounts upon application approval.
+ * Checks the option to create user accounts upon registration approval.
  *
  * @return boolean
  **/

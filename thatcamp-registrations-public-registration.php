@@ -30,13 +30,13 @@ class Thatcamp_Registrations_Public_Registration {
      * Displays the registration information on the public site.
      *
      * @todo - Refactor most of the logic for checking whether to display the
-     * user and application forms.
+     * user and registration forms.
      **/
     function display_registration() {
         $alerts = array();
         // Define some alerts if there are errors with the form.
         if ( !empty($_POST) ) {
-            // Application text is required.
+            // Registration text is required.
             if ( empty( $_POST['application_text']) ) {
                 $alerts['application_text'] = __('Please tell us why you want to come to THATCamp. What you write here will NOT be publicly displayed.', 'thatcamp-registrations');
             }
@@ -68,7 +68,7 @@ class Thatcamp_Registrations_Public_Registration {
         if ( thatcamp_registrations_user_required() && !is_user_logged_in() ) {
             echo '<div>You must have a user account to complete the form. Please <a href="<?php echo wp_login_url( get_permalink() ); ?>" title="Login">log in</a>.</div>';
         }
-        // If the currently authenticated user has submitted an application.
+        // If the currently authenticated user has submitted a registration.
         elseif (is_user_logged_in() && $existingApp = thatcamp_registrations_get_registration_by_user_id($this->current_user->ID)) {
             echo '<div>'.__('You have already submitted the form.','thatcamp-registrations').'</div>';
             
@@ -97,7 +97,7 @@ class Thatcamp_Registrations_Public_Registration {
                 echo '<input type="hidden" name="user_email" value="'. $this->current_user->user_email .'" />';
             }
             
-            echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Application', 'thatcamp-registrations') .'" />';
+            echo '<input type="submit" name="thatcamp_registrations_save_registration" value="'. __('Submit Registration', 'thatcamp-registrations') .'" />';
             echo '</form>';
         }
     }
@@ -182,7 +182,7 @@ class Thatcamp_Registrations_Public_Registration {
     function _application_form() {
     ?>
     <fieldset>
-        <legend>Application Information</legend>
+        <legend>Registration Information</legend>
     <div>
         <label for="application_text"><?php _e('Why do you want to come to THATCamp?', 'thatcamp-registrations'); ?>*</label><br />
         <p class="explanation">

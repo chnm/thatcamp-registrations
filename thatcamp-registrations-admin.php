@@ -26,7 +26,7 @@ class Thatcamp_Registrations_Admin {
      * Otherwise, it will display all the registration records in a table.
      */
     function registrations_display() {
-        // if id is set in the URL, we need to view the application with that ID.
+        // if id is set in the URL, we need to view the registration with that ID.
         if ( $id = @$_GET['id'] ) {
             $registration = thatcamp_registrations_get_registration_by_id($id);
             $applicant = thatcamp_registrations_get_applicant_info($registration);
@@ -104,10 +104,10 @@ class Thatcamp_Registrations_Admin {
             <div id="thatcamp-registrations-panel">
                 <a id="thatcamp-registrations-list-link" href="admin.php?page=thatcamp-registrations">Back to registrations list</a>
 
-                <h2>Application from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h2>
+                <h2>Registration from <?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?> (<?php echo $applicant->user_email; ?>)</h2>
                 
                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
-                    <h3>Application Status</h3>
+                    <h3>Registration Status</h3>
                     <select name="status">
                         <option name="pending" id="pending" value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
                         <option name="approved" id="approved" value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
@@ -128,7 +128,7 @@ class Thatcamp_Registrations_Admin {
                     <p class="description"><?php if($applicantUser == 0) echo ('Applicant does not have a user account on this site. If your THATCamp Registrations settings allow it, changing the applicant\'s status to Approved will add the applicant to this site as a user.'); ?></p>
                 </form>
 
-                	<h3>Application Text</h3>
+                	<h3>Registration Text</h3>
                 	<?php echo $registration->application_text; ?>
                 	
                 	<?php echo $registration->additional_information; ?>
@@ -160,21 +160,21 @@ class Thatcamp_Registrations_Admin {
 
 </div>
             <?php
-            // Otherwise, we need to view the list of applications.
+            // Otherwise, we need to view the list of registrations.
             else:
             
             ?>
             
             <?php 
             /* 
-            Get list of applications. Sort by:
+            Get list of registrations. Sort by:
             
-            1. All applications
-            2. Pending applications
-            3. Approved applications
-            4. Rejected applications.
+            1. All registrations
+            2. Pending registrations
+            3. Approved registrations
+            4. Rejected registrations
             
-            List needs a bulk action to change status of checked applications.
+            List needs a bulk action to change status of checked registrations.
             
             */ ?>
             
@@ -220,7 +220,7 @@ class Thatcamp_Registrations_Admin {
                         <td><?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?></td>
                         <td><?php echo $applicant->user_email; ?></td>
                         <td><?php echo ucwords($registration->status); ?></td>
-                        <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Application</a></td>
+                        <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Registration</a></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -277,7 +277,7 @@ class Thatcamp_Registrations_Admin {
                                 <option value="0"><?php _e('No'); ?> </option>
                                 <option value="1"<?php if($options['create_user_accounts'] == 1) { echo ' selected="selected"';} ?>><?php _e('Yes'); ?> </option>
                             </select>
-                            <p class="description"><?php _e('If &#8220;Yes&#8221; the Registration form will create a user account after an application has been approved, if one does not exist for the email associated with the application. If no, registrations will not be associated with WordPress users.', 'thatcamp-registrations'); ?></p>
+                            <p class="description"><?php _e('If &#8220;Yes&#8221; the Registration form will create a user account after an registration has been approved, if one does not exist for the email associated with the registration. If no, registrations will not be associated with WordPress users.', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
 
@@ -297,29 +297,29 @@ class Thatcamp_Registrations_Admin {
                     
                     <?php /* Removing auto-approve field until this feature works. ?>
                     <tr valign="top">
-                        <th scope="row"><label for="auto_approve_applications"><?php _e('Automatically approve applications', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="auto_approve_applications"><?php _e('Automatically approve registrations', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <input type="text" name="auto_approve_applications" value="<?php echo $options['auto_approve_applications']; ?>" />
-                            <p class="description"><?php _e('If you wish THATCamp Registrations to automatically approve a certain number of applications, fill in that number here. If left blank, or set to 0, no applications will be automatically approved.', 'thatcamp-registrations'); ?></p>
+                            <p class="description"><?php _e('If you wish THATCamp Registrations to automatically approve a certain number of registrations, fill in that number here. If left blank, or set to 0, no registrations will be automatically approved.', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
                     <?php */ ?>
                     <tr valign="top">
-                        <th scope="row"><label for="pending_application_email"><?php _e('Pending application email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="pending_application_email"><?php _e('Pending registration email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="pending_application_email" id="pending_application_email" rows="5" cols="50"><?php if( !empty($options['pending_application_email']) ) echo $options['pending_application_email']; ?></textarea>
                             <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                            
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><label for="accepted_application_email"><?php _e('Accepted application email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="accepted_application_email"><?php _e('Accepted registration email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="accepted_application_email" id="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
                              <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                                                       
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><label for="rejected_application_email"><?php _e('Rejected application email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="rejected_application_email"><?php _e('Rejected registration email', 'thatcamp-registrations'); ?></label></th>
                         <td>
                             <textarea name="rejected_application_email" id="rejected_application_email" rows="5" cols="50"><?php if( !empty($options['rejected_application_email']) ) echo $options['rejected_application_email']; ?></textarea>
                             <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>                            
