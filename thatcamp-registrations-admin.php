@@ -274,8 +274,8 @@ class Thatcamp_Registrations_Admin {
                         <th scope="row"><label for="create_user_accounts"><?php _e( 'Create user accounts after registering?', 'thatcamp-registrations' ) ?></label></th>
                         <td>
                             <select name="create_user_accounts">
-                                <option value="0"><?php _e('No'); ?> </option>
                                 <option value="1"<?php if($options['create_user_accounts'] == 1) { echo ' selected="selected"';} ?>><?php _e('Yes'); ?> </option>
+                                <option value="0"><?php _e('No'); ?> </option>
                             </select>
                             <p class="description"><?php _e('If &#8220;Yes&#8221; the Registration form will create a user account after an registration has been approved, if one does not exist for the email associated with the registration. If no, registrations will not be associated with WordPress users.', 'thatcamp-registrations'); ?></p>
                         </td>
