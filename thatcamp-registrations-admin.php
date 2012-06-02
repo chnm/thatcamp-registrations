@@ -267,7 +267,7 @@ class Thatcamp_Registrations_Admin {
                                 <option value="0"><?php _e('No'); ?> </option>
                                 <option value="1"<?php if($options['open_registration'] == 1) { echo ' selected="selected"';} ?>><?php _e('Yes'); ?> </option>
                             </select>
-                            <p class="description"><?php _e('Before you open registration, create a page called (for instance) &#8220;Register&#8221; and type &#x5b;thatcamp-registration&#x5d; in either the Visual or the HTML tab. When this setting is set to  &#8220;Yes&#8221;, the registration form will be generated on that page. ', 'thatcamp-registrations'); ?></p>
+                            <p class="description"><?php _e('Before you open registration, create a page called (for instance) &#8220;Register&#8221; and type &#x5b;thatcamp-registration&#x5d; on that page. When this setting is set to  &#8220;Yes&#8221;, the registration form will be generated on that page. ', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -275,7 +275,7 @@ class Thatcamp_Registrations_Admin {
                         <td>
                             <select name="create_user_accounts">
                                 <option value="1"<?php if($options['create_user_accounts'] == 1) { echo ' selected="selected"';} ?>><?php _e('Yes'); ?> </option>
-                                <option value="0"><?php _e('No'); ?> </option>
+                                <option value="0" <?php if($options['create_user_accounts'] == 0) { echo ' selected="selected"';} ?>><?php _e('No'); ?> </option>
                             </select>
                             <p class="description"><?php _e('If &#8220;Yes&#8221;, approving a registration will add the registrant to this site as a user with Author privileges. If &#8220;No&#8221, approving a registration will not add the registrant as a user to this site.', 'thatcamp-registrations'); ?></p>
                         </td>
