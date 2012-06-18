@@ -115,6 +115,7 @@ class Thatcamp_Registrations_Admin {
                     </select>                
                     
                     <input type="submit" name="update_status" value="Update Status">
+                    <p class="description">Site administrators: do NOT test this plugin with your own email address. Approving OR rejecting a registration that contains your own email address will change your user privileges from Administrator to Author. We will fix this bug ASAP.</p>
                     
                     <span style="display:none;">
                     <select name="user_account">
