@@ -153,28 +153,7 @@ class Thatcamp_Registrations_Public_Registration {
             <label for="description"><?php _e('Biography'); ?></label><br/>
             <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Žižek, your best score at Galaga, and so forth.', 'thatcamp-registrations'); ?></p>
             <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
-        </div>
-        <div>
-          <label for="tshirt_size"><?php _e('T-shirt Size (not all THATCamps provide t-shirts, but many do)', 'thatcamp-registrations'); ?></label><br/>
-	<select name="tshirt_size" value="<?php echo @$this->current_user->tshirt_size; ?>">
-	<option>Select a t-shirt size</option>
-	<option value="mens_s">Men's Small</option>
-	<option value="mens_m">Men's Medium</option>
-	<option value="mens_l">Men's Large</option>
-	<option value="mens_xl">Men's Extra Large</option>
-	<option value="mens_xxl">Men's Extra Extra Large</option>
-	<option value="womens_s">Women's Small</option>
-	<option value="womens_m">Women's Medium</option>
-	<option value="womens_l">Women's Large</option>
-	<option value="womens_xl">Women's Extra Large</option>
-	<option value="womens_xxl">Women's Extra Extra Large</option>
-	</select>        
-	</div>
-        <div>
-            <label for="dietary_preferences"><?php _e('Dietary Preferences'); ?></label><br/>
-            <p class="explanation"><?php _e('Let us know if you have dietary needs or preferences.', 'thatcamp-registrations'); ?></p>
-            <textarea cols="45" rows="8" name="dietary_preferences"><?php echo @$this->current_user->dietary_preferences; ?></textarea>
-        </div>
+        </div>         
     </fieldset>
     <?php
     }
