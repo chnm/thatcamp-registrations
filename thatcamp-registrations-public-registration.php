@@ -108,15 +108,15 @@ class Thatcamp_Registrations_Public_Registration {
     <fieldset>
         <legend>Personal Information</legend>
         <div>
-            <label for="first_name"><?php _e('First Name'); ?>*</label><br />
+            <label for="first_name"><?php _e('First Name'); ?>* (required)</label><br />
             <input type="text" name="first_name" value="<?php echo $this->current_user->first_name; ?>" class="textfield" />
         </div>
         <div>
-            <label for="last_name"><?php _e('Last Name'); ?>*</label><br />
+            <label for="last_name"><?php _e('Last Name'); ?>* (required)</label><br />
             <input type="text" name="last_name" value="<?php echo @$this->current_user->last_name; ?>" class="textfield" />
         </div>
         <div>
-            <label for="user_email"><?php _e('Email'); ?>*</label><br />
+            <label for="user_email"><?php _e('Email'); ?>* (required)</label><br />
             <input type="text" name="user_email" value="<?php echo @$this->current_user->user_email; ?>" class="textfield" />
         </div>
         <div>
@@ -163,7 +163,7 @@ class Thatcamp_Registrations_Public_Registration {
     <fieldset>
         <legend>Registration Information</legend>
     <div>
-        <label for="application_text"><?php _e('Why do you want to come to THATCamp?', 'thatcamp-registrations'); ?>*</label><br />
+        <label for="application_text"><?php _e('Why do you want to come to THATCamp?', 'thatcamp-registrations'); ?>* (required)</label><br />
         <p class="explanation">
         <?php _e('In a few sentences, no more than a couple of paragraphs, please 
         tell us why you want to come to THATCamp. You might tell us what task 
