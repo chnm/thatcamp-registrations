@@ -84,7 +84,18 @@ class Thatcamp_Registrations_Public_Registration {
                     echo '<p style="background:#fc0; padding: 4px;">'.$alert.'</p>';
                 }
             }
-            
+
+	    $login_link = add_query_arg( 'redirect_to', wp_guess_url(), wp_login_url() );
+
+	    // Nudge the user to log in
+	    if ( ! is_user_logged_in() ) {
+		    echo "<h3>Already have a THATCamp account?</h3>";
+		    echo "<p>If you've attended a THATCamp in the past, you probably already have an account on thatcamp.org. <a href='<?php echo $login_link ?>'>Log in</a> and we'll pre-fill some of your information for you.</p>";
+	    } else {
+		    echo "<h3>Welcome back!</h3>";
+		    echo sprintf( '<p>You are logged in as <strong>%1$s</strong>, using the the email address <strong>%2$s</strong></p>', $this->current_user->display_name, $this->current_user->user_email );
+	    }
+
             echo '<form method="post" action="">';
 
             $this->_application_form();
