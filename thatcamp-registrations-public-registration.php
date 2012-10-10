@@ -54,6 +54,10 @@ class Thatcamp_Registrations_Public_Registration {
                 if ( empty( $_POST['user_email'] ) ) {
                     $alerts['user_email'] = __('You must add an email address.', 'thatcamp-registrations');
                 }
+
+	        if ( $_POST['user_email'] == get_option( 'admin_email' ) ) {
+		    $alerts['user_email'] = __( 'You cannot register using this site\'s admin email address.', 'thatcamp-registrations' );
+		}
             }
 
             $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
