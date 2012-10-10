@@ -166,7 +166,13 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
 
         // If we have a valid a User ID, we're dealing with an existing user.
         if ($userId) {
-            add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
+
+	    // Don't allow Administrators to be demoted. See #24
+	    $wp_user = new WP_User( $userId );
+	    if ( ! is_a( $wp_user, 'WP_User' ) || ! in_array( 'administrator', $wp_user->roles ) ) {
+		    add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
+	    }
+
             wp_new_user_notification($userId);
 
         }
