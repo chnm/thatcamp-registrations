@@ -93,11 +93,11 @@ class Thatcamp_Registrations_Public_Registration {
 
 	    // Nudge the user to log in
 	    if ( ! is_user_logged_in() ) {
-		    echo "<h3>Already have a THATCamp account?</h3>";
-		    echo "<p>If you've attended a THATCamp in the past, you probably already have an account on thatcamp.org. <a href='<?php echo $login_link ?>'>Log in</a> and we'll pre-fill some of your information for you.</p>";
+		    echo "<h3>" . __( "Already have a THATCamp account?", 'thatcamp-registrations' ) . "</h3>";
+		    echo "<p>" . sprintf( __( "If you've attended a THATCamp in the past, you probably already have an account on thatcamp.org. <a href='%s'>Log in</a> and we'll pre-fill some of your information for you.", 'thatcamp-registrations' ), $login_link ) . "</p>";
 	    } else {
-		    echo "<h3>Welcome back!</h3>";
-		    echo sprintf( '<p>You are logged in as <strong>%1$s</strong>, using the the email address <strong>%2$s</strong></p>', $this->current_user->display_name, $this->current_user->user_email );
+		    echo "<h3>" . __( "Welcome back!", 'thatcamp-registrations' ) . "</h3>";
+		    echo "<p>" . sprintf( __( 'You are logged in as <strong>%1$s</strong>, using the the email address <strong>%2$s</strong>', 'thatcamp-registrations' ), $this->current_user->display_name, $this->current_user->user_email ) . "</p>";
 	    }
 
             echo '<form method="post" action="">';
@@ -169,7 +169,7 @@ class Thatcamp_Registrations_Public_Registration {
             <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Žižek, your best score at Galaga, and so forth.', 'thatcamp-registrations'); ?></p>
             <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
         </div>
-        <!-- Removed t-shirt size and dietary preferences fields. 10/17/2012 AF -->       
+        <!-- Removed t-shirt size and dietary preferences fields. 10/17/2012 AF -->
     </fieldset>
     <?php
     }
