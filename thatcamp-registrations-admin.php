@@ -305,11 +305,14 @@ class Thatcamp_Registrations_Admin {
             $newOptions = array(
                 'open_registration'             =>  $_POST['open_registration'],
                 'create_user_accounts'          =>  $_POST['create_user_accounts'],
-                'require_login'                 =>  $_POST['require_login'],
                 'pending_application_email'     =>  $_POST['pending_application_email'],
                 'accepted_application_email'    =>  $_POST['accepted_application_email'],
                 'rejected_application_email'    =>  $_POST['rejected_application_email']
                 );
+
+	    $admin_notify_emails = $_POST['admin_notify_emails'];
+	    $admin_notify_emails = array_map( 'trim', explode( "\n", $admin_notify_emails ) );
+	    $newOptions['admin_notify_emails'] = $admin_notify_emails;
 
             update_option('thatcamp_registrations_options', $newOptions);
 
@@ -342,6 +345,15 @@ class Thatcamp_Registrations_Admin {
                                 <option value="0" <?php if($options['create_user_accounts'] == 0) { echo ' selected="selected"';} ?>><?php _e('No'); ?> </option>
                             </select>
                             <p class="description"><?php _e('If &#8220;Yes&#8221;, approving a registration will add the registrant to this site as a user with Author privileges. If &#8220;No&#8221, approving a registration will not add the registrant as a user to this site.', 'thatcamp-registrations'); ?></p>
+                        </td>
+                    </tr>
+
+		    <tr>
+                        <th scope="row"><label for="admin_notify_emails"><?php _e( 'Application notification addresses', 'thatcamp-registrations' ) ?></label></th>
+                        <td>
+                            <textarea name="admin_notify_emails"><?php thatcamp_registrations_application_notification_emails_textarea() ?></textarea>
+
+                            <p class="description"><?php _e('These addresses will receive a notification whenever a new registration is submitted. One per line.', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
 

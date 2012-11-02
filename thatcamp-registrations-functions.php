@@ -44,7 +44,7 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         || $registration = thatcamp_registrations_get_registration_by_applicant_email($applicant_email) ) {
             return 'You have already submitted your registration.';
     } else {
-        $wpdb->insert(
+        $reg_id = $wpdb->insert(
             $table,
             array(
                 'applicant_info'            => $applicant_info,
@@ -56,6 +56,8 @@ function thatcamp_registrations_add_registration($status = 'pending') {
                 )
             );
         thatcamp_registrations_send_applicant_email($applicant_email);
+
+	thatcamp_registrations_send_admin_notification( $wpdb->insert_id );
     }
 }
 
@@ -284,6 +286,8 @@ function thatcamp_registrations_create_user($registrationId)
 /**
  * Returns the value for thatcamp_registrations_options
  *
+ * Also provides some defaults
+ *
  * @uses get_option()
  * @return array The array of options
  **/
@@ -303,6 +307,10 @@ function thatcamp_registrations_options()
 		$options['create_user_accounts'] = 1;
 	}
 
+	// We do an isset check here, because we want to allow for null values
+	if ( ! isset( $options['admin_notify_emails'] ) ) {
+		$options['admin_notify_emails'] = array( get_option( 'admin_email' ) );
+	}
 
 	if ( empty( $options['pending_application_email'] ) ) {
 		$options['pending_application_email'] = sprintf( __( 'Your registration form for %1$s has been received. You will receive another e-mail when your registration has been approved. Please contact %2$s with any questions.', 'thatcamp-registrations' ),
@@ -341,7 +349,7 @@ function thatcamp_registrations_option($optionName)
 {
     if (isset($optionName)) {
         $options = thatcamp_registrations_options();
-        return $options[$optionName];
+        return isset( $options[ $optionName ] ) ? $options[ $optionName ] : '';
     }
     return false;
 }
@@ -461,4 +469,35 @@ function thatcamp_registrations_registration_is_open()
 function thatcamp_registrations_generate_token()
 {
     return sha1(microtime() . mt_rand(1, 100000));
+}
+
+/**
+ * Pulls up the emails that are to be notified about new registrations, and
+ * formats them as they should appear in a textarea
+ */
+function thatcamp_registrations_application_notification_emails_textarea() {
+	$emails = thatcamp_registrations_option( 'admin_notify_emails' );
+	echo esc_attr( implode( "\n", (array) $emails ) );
+}
+
+/**
+ * For a new registration, send email notifications to admins who have requested them
+ */
+function thatcamp_registrations_send_admin_notification( $reg_id ) {
+	$emails = thatcamp_registrations_option( 'admin_notify_emails' );
+	if ( ! empty( $emails ) ) {
+		$registration = thatcamp_registrations_get_registrations( array( 'id' => $reg_id ) );
+		if ( ! empty( $registration ) ) {
+			$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+			$subject  = sprintf( __( 'New application at %s', 'thatcamp-registrations' ), $blogname );
+			$content  = sprintf( __( 'You have received a new application at %1$s. To view this application, visit %2$s', 'thatcamp-registrations' ),
+				$blogname,
+				admin_url( 'page=thatcamp-registrations&id=' . intval( $reg_id ) )
+			);
+
+			foreach ( $emails as $email ) {
+				wp_mail( $email, $subject, $content );
+			}
+		}
+	}
 }
