@@ -315,7 +315,7 @@ class Thatcamp_Registrations_Admin {
 
         }
 
-        $options = get_option('thatcamp_registrations_options');
+        $options = thatcamp_registrations_options();
 
     ?>
         <div class="wrap">

@@ -289,7 +289,45 @@ function thatcamp_registrations_create_user($registrationId)
  **/
 function thatcamp_registrations_options()
 {
-    return get_option('thatcamp_registrations_options');
+	$options = get_option('thatcamp_registrations_options');
+
+	if ( ! is_array( $options ) ) {
+		$options = array();
+	}
+
+	if ( empty( $options['open_registration'] ) ) {
+		$options['open_registration'] = 0;
+	}
+
+	if ( empty( $options['create_user_accounts'] ) ) {
+		$options['create_user_accounts'] = 1;
+	}
+
+
+	if ( empty( $options['pending_application_email'] ) ) {
+		$options['pending_application_email'] = sprintf( __( 'Your registration form for %1$s has been received. You will receive another e-mail when your registration has been approved. Please contact %2$s with any questions.', 'thatcamp-registrations' ),
+			get_option( 'blogname' ),
+			get_option( 'admin_email' )
+		);
+	}
+
+	if ( empty( $options['accepted_application_email'] ) ) {
+		$options['accepted_application_email'] = sprintf( __( 'Your registration for %1$s has been approved! We\'ll see you at %1$s. You should receive a separate e-mail with your login and password information. Please log in at %2$s and update your profile. It\'s never too early to begin proposing ideas for sessions, either -- see %3$s or %4$s for more information on that. Contact %5$s with any questions.', 'thatcamp-registrations' ),
+			get_option( 'blogname' ),
+			wp_login_url(),
+			home_url( 'propose' ),
+			home_url( 'proposals' ),
+			get_option( 'admin_email' )
+		);
+	}
+
+	if ( empty( $options['rejected_application_email'] ) ) {
+		$options['rejected_application_email'] = sprintf( __( 'Sorry, but your registration for %1$s has been rejected. Please contact us at thatcamp.org if you think you have received this message in error.', 'thatcamp-registrations' ),
+			get_option( 'blogname' )
+		);
+	}
+
+	return $options;
 }
 
 /**
