@@ -171,6 +171,7 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
 	    $wp_user = new WP_User( $userId );
 	    if ( ! is_a( $wp_user, 'WP_User' ) || ! in_array( 'administrator', $wp_user->roles ) ) {
 		    add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
+		    thatcamp_registrations_existing_user_welcome_email( $userId );
 	    }
 
         }
@@ -358,6 +359,34 @@ function thatcamp_registrations_send_applicant_email($to, $status = "pending")
         return __('Email successfully sent!');
     }
     return false;
+}
+
+/**
+ * Sends an email to existing users when being added to a blog
+ *
+ * We do this in place of using wp_new_user_notification(), which doesn't work
+ * well for our purpose
+ *
+ * @param int $user_id
+ * @return bool
+ */
+function thatcamp_registrations_existing_user_welcome_email( $user_id ) {
+	$user = new WP_User( $user_id );
+
+	if ( is_a( $user, 'WP_User' ) ) {
+		$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+		$subject  = sprintf( __( '[%s] Your username and password', 'thatcamp-registrations' ), $blogname );
+
+		$content  = sprintf( __( 'Username: %s', 'thatcamp-registrations' ), $user->user_login );
+		$content .= "\n\r";
+		$content .= sprintf( __( 'Forgot your password? %s', 'thatcamp-registrations' ), add_query_arg( 'action', 'lostpassword', wp_login_url() ) );
+		$content .= "\n\r";
+		$content .= sprintf( __( 'Log in: %s', 'thatcamp-registrations' ), wp_login_url() );
+
+		return wp_mail( $user->user_email, $subject, $content );
+	}
+
+	return false;
 }
 
 /**
