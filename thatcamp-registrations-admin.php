@@ -131,7 +131,7 @@ class Thatcamp_Registrations_Admin {
                 	<h3>Registration Text</h3>
                 	<?php echo $registration->application_text; ?>
 
-                	<?php echo $registration->additional_information; ?>
+                	<?php if ( ! empty( $registration->additional_information ) ) : echo $registration->additional_information; endif; ?>
 
                 	<h3>Previous THATCamps</h3>
                 	<?php echo $applicant->previous_thatcamps; ?>
