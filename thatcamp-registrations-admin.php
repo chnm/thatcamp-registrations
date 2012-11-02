@@ -9,15 +9,24 @@ class Thatcamp_Registrations_Admin {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
+	/**
+	 * Catch any incoming requests before the screen is rendered
+	 */
 	function init() {
-	    if ( isset( $_GET['page'] ) && 'thatcamp-registrations' == $_GET['page']
-	      && isset( $_GET['id'] )
-	      && isset( $_GET['action'] ) && 'spam' == $_GET['action']
-	      && current_user_can( 'manage_options' ) ) {
-		check_admin_referer( 'tcspam' );
-		self::delete_spam_registration( intval( $_GET['id'] ) );
-	    }
-	    do_action( 'thatcamp_registrations_admin_init' );
+		if ( isset( $_GET['page'] ) && 'thatcamp-registrations' == $_GET['page']
+		  && isset( $_GET['id'] )
+		  && isset( $_GET['action'] ) && 'spam' == $_GET['action']
+		  && current_user_can( 'manage_options' ) ) {
+			check_admin_referer( 'tcspam' );
+			self::delete_spam_registration( intval( $_GET['id'] ) );
+		}
+
+		if ( isset( $_POST['tcr_bulk_action'] ) && isset( $_POST['registration_ids'] ) ) {
+			check_admin_referer( 'tcr_bulk_action' );
+			self::process_bulk_action( $_POST['tcr_bulk_action'], $_POST['registration_ids'] );
+		}
+
+		do_action( 'thatcamp_registrations_admin_init' );
 	}
 
     function admin_menu() {
@@ -188,11 +197,27 @@ class Thatcamp_Registrations_Admin {
 
 	    <?php if ( ! empty( $_GET['success'] ) ) : ?>
 		<div class="updated">
-		<?php switch ( $_GET['success'] ) :
-			case( 'spammed' ) : ?>
-			<p><?php _e( 'You have successfully spammed the registration.', 'thatcamp-registrations' ) ?></p>
-			<?php break;
-		endswitch; ?>
+		<?php
+			switch ( $_GET['success'] ) {
+				case 'accepted' :
+					$message = __( 'Successfully accepted!', 'thatcamp-registrations' );
+					break;
+
+				case 'pending' :
+					$message = __( 'Successfully marked as pending!', 'thatcamp-registrations' );
+					break;
+
+				case 'rejected' :
+					$message = __( 'Successfully rejected!', 'thatcamp-registrations' );
+					break;
+
+				case 'spammed' :
+					$message = __( 'Successfully spammed!', 'thatcamp-registrations' );
+					break;
+			}
+		?>
+
+		<p><?php echo $message ?></p>
 		</div>
 	    <?php endif ?>
 
@@ -204,19 +229,35 @@ class Thatcamp_Registrations_Admin {
                 <p>There are <?php echo count($registrations); ?> total registrations.</p>
                 <form action="" method="post">
 
+		<div class="tablenav top">
+			<div class="alignleft actions">
+				<select name="tcr_bulk_action">
+					<option selected="selected" value=""><?php _e( 'Bulk Actions', 'thatcamp-registrations' ) ?></option>
+					<option value="mark_accepted"><?php _e( 'Mark Accepted', 'thatcamp-registrations' ) ?></option>
+					<option value="mark_pending"><?php _e( 'Mark Pending', 'thatcamp-registrations' ) ?></option>
+					<option value="mark_rejected"><?php _e( 'Mark Rejected', 'thatcamp-registrations' ) ?></option>
+					<option value="mark_spam"><?php _e( 'Spam', 'thatcamp-registrations' ) ?></option>
+				</select>
+
+				<input type="submit" value="Apply" class="button-secondary action" id="doaction" name="">
+			</div>
+		</div>
+
                 <table class="widefat fixed" cellspacing="0">
                 <thead>
                 <tr class="thead">
+		    <th id="cb" class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
                     <th>Applicant Name</th>
                     <th>Applicant Email</th>
                     <th>Status</th>
                     <th>View</th>
-                    <th>Spam</th>
+                    <th>Mark Spam</th>
                 </tr>
                 </thead>
 
                 <tfoot>
                 <tr class="thead">
+		    <th id="cb" class="manage-column column-cb check-column" scope="col"><input type="checkbox" /></th>
                     <th>Applicant Name</th>
                     <th>Applicant Email</th>
                     <th>Status</th>
@@ -229,6 +270,7 @@ class Thatcamp_Registrations_Admin {
                 <?php foreach ( $registrations as $registration ): ?>
                     <tr>
                         <?php $applicant = thatcamp_registrations_get_applicant_info($registration); ?>
+			<th class="check-column"><input type="checkbox" name="registration_ids[]" value="<?php echo intval( $registration->id ) ?>" /></th>
                         <td><?php echo $applicant->first_name; ?> <?php echo $applicant->last_name; ?></td>
                         <td><?php echo $applicant->user_email; ?></td>
                         <td><?php echo ucwords($registration->status); ?></td>
@@ -238,6 +280,8 @@ class Thatcamp_Registrations_Admin {
                 <?php endforeach; ?>
                 </tbody>
                 </table>
+
+		<?php wp_nonce_field( 'tcr_bulk_action' ) ?>
                 </form>
                 <?php else: ?>
                     <p>You don't have any registrations yet.</p>
@@ -356,6 +400,38 @@ class Thatcamp_Registrations_Admin {
 	thatcamp_registrations_delete_registration( $reg_id );
 	$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce' ) );
 	$redirect_to = add_query_arg( 'success', 'spammed', $redirect_to );
+	wp_safe_redirect( $redirect_to );
+    }
+
+    function process_bulk_action( $action, $reg_ids ) {
+	$reg_ids = wp_parse_id_list( $reg_ids );
+
+	foreach ( $reg_ids as $reg_id ) {
+		switch( $action ) {
+			case 'mark_accepted' :
+				$status = 'accepted';
+				thatcamp_registrations_process_registrations( $reg_ids, $status );
+				break;
+
+			case 'mark_pending' :
+				$status = 'pending';
+				thatcamp_registrations_process_registrations( $reg_ids, $status );
+				break;
+
+			case 'mark_rejected' :
+				$status = 'rejected';
+				thatcamp_registrations_process_registrations( $reg_ids, $status );
+				break;
+
+			case 'mark_spam' :
+				$status = 'spammed';
+				thatcamp_registrations_delete_registration( $reg_id );
+				break;
+		}
+	}
+
+	$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce', 'success' ) );
+	$redirect_to = add_query_arg( 'success', $status, $redirect_to );
 	wp_safe_redirect( $redirect_to );
     }
 }
