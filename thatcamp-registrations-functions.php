@@ -173,8 +173,6 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
 		    add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
 	    }
 
-            wp_new_user_notification($userId);
-
         }
         // We're probably dealing with a new user. Lets create one and associate it to our blog.
         else {
