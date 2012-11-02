@@ -10,6 +10,13 @@ class Thatcamp_Registrations_Admin {
 	}
 
 	function init() {
+	    if ( isset( $_GET['page'] ) && 'thatcamp-registrations' == $_GET['page']
+	      && isset( $_GET['id'] )
+	      && isset( $_GET['action'] ) && 'spam' == $_GET['action']
+	      && current_user_can( 'manage_options' ) ) {
+		check_admin_referer( 'tcspam' );
+		self::delete_spam_registration( intval( $_GET['id'] ) );
+	    }
 	    do_action( 'thatcamp_registrations_admin_init' );
 	}
 
@@ -186,6 +193,16 @@ class Thatcamp_Registrations_Admin {
             </div>
             <?php endif; ?>
 
+	    <?php if ( ! empty( $_GET['success'] ) ) : ?>
+		<div class="updated">
+		<?php switch ( $_GET['success'] ) :
+			case( 'spammed' ) : ?>
+			<p><?php _e( 'You have successfully spammed the registration.', 'thatcamp-registrations' ) ?></p>
+			<?php break;
+		endswitch; ?>
+		</div>
+	    <?php endif ?>
+
             <?php
             $bootcampRegistrations = thatcamp_registrations_get_registrations(array('bootcamp' => '1'));
             $registrations = thatcamp_registrations_get_registrations();
@@ -201,6 +218,7 @@ class Thatcamp_Registrations_Admin {
                     <th>Applicant Email</th>
                     <th>Status</th>
                     <th>View</th>
+                    <th>Spam</th>
                 </tr>
                 </thead>
 
@@ -210,6 +228,7 @@ class Thatcamp_Registrations_Admin {
                     <th>Applicant Email</th>
                     <th>Status</th>
                     <th>View</th>
+                    <th>Spam</th>
                 </tr>
                 </tfoot>
 
@@ -221,6 +240,7 @@ class Thatcamp_Registrations_Admin {
                         <td><?php echo $applicant->user_email; ?></td>
                         <td><?php echo ucwords($registration->status); ?></td>
                         <td><a href="admin.php?page=thatcamp-registrations&amp;id=<?php echo $registration->id; ?>">View Full Registration</a></td>
+                        <td><a href="<?php echo wp_nonce_url( add_query_arg( array( 'id' => $registration->id, 'page' => 'thatcamp-registrations', 'action' => 'spam' ), 'admin.php' ), 'tcspam' ) ?>" class="spam" onclick="return confirm('Are you sure you want to delete this registration as spam? There is no undo.');">Spam</a></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -337,6 +357,13 @@ class Thatcamp_Registrations_Admin {
             </form>
         </div>
     <?php
+    }
+
+    function delete_spam_registration( $reg_id ) {
+	thatcamp_registrations_delete_registration( $reg_id );
+	$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce' ) );
+	$redirect_to = add_query_arg( 'success', 'spammed', $redirect_to );
+	wp_safe_redirect( $redirect_to );
     }
 }
 
