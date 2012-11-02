@@ -27,8 +27,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         'user_title',
         'user_organization',
         'user_twitter',
-        'tshirt_size',
-        'dietary_preferences'
     );
 
     foreach ( $applicant_fields as $field) {

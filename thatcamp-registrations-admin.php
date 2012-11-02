@@ -158,13 +158,6 @@ class Thatcamp_Registrations_Admin {
 		<h3>Organization</h3>
 		<?php echo $applicant->user_organization; ?>
 
-		<h3>T-shirt size</h3>
-		<?php echo $applicant->tshirt_size; ?>
-
-		<h3>Dietary preferences</h3>
-		<?php echo $applicant->dietary_preferences; ?>
-
-
 </div>
             <?php
             // Otherwise, we need to view the list of registrations.
