@@ -13,17 +13,20 @@ class Thatcamp_Registrations_Admin {
 	 * Catch any incoming requests before the screen is rendered
 	 */
 	function init() {
-		if ( isset( $_GET['page'] ) && 'thatcamp-registrations' == $_GET['page']
-		  && isset( $_GET['id'] )
-		  && isset( $_GET['action'] ) && 'spam' == $_GET['action']
-		  && current_user_can( 'manage_options' ) ) {
-			check_admin_referer( 'tcspam' );
-			self::delete_spam_registration( intval( $_GET['id'] ) );
-		}
+		if ( isset( $_GET['page'] ) && 'thatcamp-registrations' == $_GET['page'] && current_user_can( 'manage_options' ) ) {
+			if ( isset( $_GET['id'] )&& isset( $_GET['action'] ) && 'spam' == $_GET['action'] ) {
+				check_admin_referer( 'tcspam' );
+				self::delete_spam_registration( intval( $_GET['id'] ) );
+			}
 
-		if ( isset( $_POST['tcr_bulk_action'] ) && isset( $_POST['registration_ids'] ) ) {
-			check_admin_referer( 'tcr_bulk_action' );
-			self::process_bulk_action( $_POST['tcr_bulk_action'], $_POST['registration_ids'] );
+			if ( isset( $_POST['tcr_bulk_action'] ) && isset( $_POST['registration_ids'] ) ) {
+				check_admin_referer( 'tcr_bulk_action' );
+				self::process_bulk_action( $_POST['tcr_bulk_action'], $_POST['registration_ids'] );
+			}
+
+			if ( isset( $_GET['trc_csv'] ) ) {
+				self::render_csv();
+			}
 		}
 
 		do_action( 'thatcamp_registrations_admin_init' );
@@ -241,6 +244,10 @@ class Thatcamp_Registrations_Admin {
 
 				<input type="submit" value="Apply" class="button-secondary action" id="doaction" name="">
 			</div>
+
+			<div class="alignright actions">
+				<a class="button-secondary action" href="<?php echo add_query_arg( 'trc_csv', '1' ) ?>"><?php _e( 'Export to CSV' ) ?></a>
+			</div>
 		</div>
 
                 <table class="widefat fixed" cellspacing="0">
@@ -396,44 +403,116 @@ class Thatcamp_Registrations_Admin {
     <?php
     }
 
-    function delete_spam_registration( $reg_id ) {
-	thatcamp_registrations_delete_registration( $reg_id );
-	$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce' ) );
-	$redirect_to = add_query_arg( 'success', 'spammed', $redirect_to );
-	wp_safe_redirect( $redirect_to );
-    }
-
-    function process_bulk_action( $action, $reg_ids ) {
-	$reg_ids = wp_parse_id_list( $reg_ids );
-
-	foreach ( $reg_ids as $reg_id ) {
-		switch( $action ) {
-			case 'mark_accepted' :
-				$status = 'accepted';
-				thatcamp_registrations_process_registrations( $reg_ids, $status );
-				break;
-
-			case 'mark_pending' :
-				$status = 'pending';
-				thatcamp_registrations_process_registrations( $reg_ids, $status );
-				break;
-
-			case 'mark_rejected' :
-				$status = 'rejected';
-				thatcamp_registrations_process_registrations( $reg_ids, $status );
-				break;
-
-			case 'mark_spam' :
-				$status = 'spammed';
-				thatcamp_registrations_delete_registration( $reg_id );
-				break;
-		}
+	function delete_spam_registration( $reg_id ) {
+		thatcamp_registrations_delete_registration( $reg_id );
+		$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce' ) );
+		$redirect_to = add_query_arg( 'success', 'spammed', $redirect_to );
+		wp_safe_redirect( $redirect_to );
 	}
 
-	$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce', 'success' ) );
-	$redirect_to = add_query_arg( 'success', $status, $redirect_to );
-	wp_safe_redirect( $redirect_to );
-    }
+	function process_bulk_action( $action, $reg_ids ) {
+		$reg_ids = wp_parse_id_list( $reg_ids );
+
+		foreach ( $reg_ids as $reg_id ) {
+			switch( $action ) {
+				case 'mark_accepted' :
+					$status = 'accepted';
+					thatcamp_registrations_process_registrations( $reg_ids, $status );
+					break;
+
+				case 'mark_pending' :
+					$status = 'pending';
+					thatcamp_registrations_process_registrations( $reg_ids, $status );
+					break;
+
+				case 'mark_rejected' :
+					$status = 'rejected';
+					thatcamp_registrations_process_registrations( $reg_ids, $status );
+					break;
+
+				case 'mark_spam' :
+					$status = 'spammed';
+					thatcamp_registrations_delete_registration( $reg_id );
+					break;
+			}
+		}
+
+		$redirect_to = remove_query_arg( array( 'id', 'action', '_wpnonce', 'success' ) );
+		$redirect_to = add_query_arg( 'success', $status, $redirect_to );
+		wp_safe_redirect( $redirect_to );
+	}
+
+	function render_csv() {
+		$registrations = thatcamp_registrations_get_registrations();
+
+		$ud	      = wp_upload_dir();
+		$csv_dir      = trailingslashit( $ud['basedir'] ) . trailingslashit( 'thatcamp-registrations' );
+		$csv_basename = 'registrations-' . date( 'Ymd' ) . '.csv';
+
+		if ( ! is_dir( $csv_dir ) ) {
+			mkdir( $csv_dir );
+		}
+
+		$csv_path = $csv_dir . $csv_basename;
+		$fp = fopen( $csv_path, 'w' );
+
+		// Build an array that will represent the proper column headers
+		$cols = array(
+			array( 'ukey' => 'id', 'title' => 'Registration ID #' ),
+			array( 'ukey' => 'date', 'title' => 'Date' ),
+			array( 'ukey' => 'user_id', 'title' => 'WP User ID' ),
+			array( 'ukey' => 'user_email', 'title' => 'Email' ),
+			array( 'ukey' => 'first_name', 'title' => 'First Name' ),
+			array( 'ukey' => 'last_name', 'title' => 'Last Name' ),
+			array( 'ukey' => 'user_url', 'title' => 'URL' ),
+			array( 'ukey' => 'description', 'title' => 'Description' ),
+			array( 'ukey' => 'previous_thatcamps', 'title' => 'Previous THATCamps' ),
+			array( 'ukey' => 'user_title', 'title' => 'Title' ),
+			array( 'ukey' => 'user_organization', 'title' => 'Organization' ),
+			array( 'ukey' => 'user_twitter', 'title' => 'Twitter' ),
+			array( 'ukey' => 'tshirt_size', 'title' => 'T-shirt Size' ),
+			array( 'ukey' => 'dietary_preferences', 'title' => 'Dietary Preferences' ),
+			array( 'ukey' => 'application_text', 'title' => 'Application Text' ),
+			array( 'ukey' => 'status', 'title' => 'Status' ),
+		);
+
+		// Column headers
+		$headers = wp_list_pluck( $cols, 'title' );
+		fputcsv( $fp, $headers );
+
+		foreach ( $registrations as $reg ) {
+			$reg_array = array();
+			foreach ( $reg as $rkey => $rvalue ) {
+				// applicant_info should be exploded out
+				if ( $rkey == 'applicant_info' ) {
+					$applicant_info = maybe_unserialize( $rvalue );
+					foreach ( $applicant_info as $info_key => $info_value ) {
+						$reg_array[ $info_key ] = $info_value;
+					}
+				} else {
+					$reg_array[ $rkey ] = $rvalue;
+				}
+			}
+
+			// Create a clean array
+			$reg_array_clean = array();
+			foreach ( $cols as $col ) {
+				$user_col_value = isset( $reg_array[ $col['ukey'] ] ) ? $reg_array[ $col['ukey'] ] : '';
+				$reg_array_clean[ $col['ukey'] ] = $user_col_value;
+			}
+			fputcsv( $fp, $reg_array_clean );
+		}
+		fclose( $fp );
+
+		header("Content-type: application/force-download");
+		header('Content-Disposition: inline; filename="' . $csv_path . '"');
+		header("Content-Transfer-Encoding: Binary");
+		header("Content-length: ".filesize($csv_path));
+		header('Content-Type: application/excel');
+		header('Content-Disposition: attachment; filename="'.$csv_basename.'"');
+		readfile($csv_path);
+		exit;
+	}
 }
 
 endif; // class exists
