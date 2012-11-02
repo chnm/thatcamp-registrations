@@ -41,6 +41,10 @@ class Thatcamp_Registrations_Public_Registration {
                 $alerts['application_text'] = __('Please tell us why you want to come to THATCamp. What you write here will NOT be publicly displayed.', 'thatcamp-registrations');
             }
 
+	    if ( ! empty( $_POST['tcppl-field'] ) ) {
+	        $alerts['spammer'] = __( "It looks like you filled in the spammer field. No account for you!", 'thatcamp-registrations' );
+	    }
+
             // User email is required.
             if (!is_user_logged_in()) {
                 if ( empty( $_POST['first_name']) ) {
@@ -102,11 +106,11 @@ class Thatcamp_Registrations_Public_Registration {
 
             echo '<form method="post" action="">';
 
-            $this->_application_form();
+	    $this->_application_form();
 
-            // If user login is not required, display the user info form.
-            if ( !thatcamp_registrations_user_required() && !is_user_logged_in()) {
-                $this->_user_info_form();
+	    // If user login is not required, display the user info form.
+	    if ( !thatcamp_registrations_user_required() && !is_user_logged_in()) {
+		    $this->_user_info_form();
             } elseif (is_user_logged_in()) {
                 echo '<input type="hidden" name="user_id" value="'. $this->current_user->ID .'" />';
                 echo '<input type="hidden" name="user_email" value="'. $this->current_user->user_email .'" />';
@@ -169,6 +173,15 @@ class Thatcamp_Registrations_Public_Registration {
             <p class="explanation"><?php _e('Tell us a little about yourself: your background with the humanities and/or technology, your research or professional interests, your opinion of Nicholas Carr or Slavoj Žižek, your best score at Galaga, and so forth.', 'thatcamp-registrations'); ?></p>
             <textarea cols="45" rows="8" name="description"><?php echo @$this->current_user->description; ?></textarea>
         </div>
+
+	<style type="text/css">
+		#tcppl { display: none; visibility: hidden; }
+	</style>
+
+	<div id="tcppl">
+		<label for="tcppl-field"><?php _e( "This field should be left blank. It's a trap for spambots.", 'thatcamp-registrations' ) ?></label>
+		<input type="text" id="tcppl-field" name="tcppl-field" />
+	</div>
         <!-- Removed t-shirt size and dietary preferences fields. 10/17/2012 AF -->
     </fieldset>
     <?php
