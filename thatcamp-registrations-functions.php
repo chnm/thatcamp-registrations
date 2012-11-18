@@ -27,6 +27,8 @@ function thatcamp_registrations_add_registration($status = 'pending') {
         'user_title',
         'user_organization',
         'user_twitter',
+        'discipline',
+        'technology_skill_level',
     );
 
     foreach ( $applicant_fields as $field) {

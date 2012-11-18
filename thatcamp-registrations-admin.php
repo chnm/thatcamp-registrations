@@ -180,6 +180,12 @@ class Thatcamp_Registrations_Admin {
 		<h3>Organization</h3>
 		<?php echo $applicant->user_organization; ?>
 
+		<h3><?php _e( 'Discipline', 'thatcamp-registrations' ) ?></h3>
+		<?php echo $applicant->discipline; ?>
+
+		<h3><?php _e( 'Technology Skill Level', 'thatcamp-registrations' ) ?></h3>
+		<?php echo $applicant->technology_skill_level; ?>
+
 </div>
             <?php
             // Otherwise, we need to view the list of registrations.
@@ -492,6 +498,8 @@ class Thatcamp_Registrations_Admin {
 			array( 'ukey' => 'user_title', 'title' => 'Title' ),
 			array( 'ukey' => 'user_organization', 'title' => 'Organization' ),
 			array( 'ukey' => 'user_twitter', 'title' => 'Twitter' ),
+			array( 'ukey' => 'discipline', 'title' => __( 'Discipline', 'thatcamp-registrations' ) ),
+			array( 'ukey' => 'technology_skill_level', 'title' => __( 'Technology Skill Level', 'thatcamp-registrations' ) ),
 			array( 'ukey' => 'application_text', 'title' => 'Application Text' ),
 			array( 'ukey' => 'status', 'title' => 'Status' ),
 		);
