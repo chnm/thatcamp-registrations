@@ -202,8 +202,8 @@ class Thatcamp_Registrations_Admin {
 		<div class="updated">
 		<?php
 			switch ( $_GET['success'] ) {
-				case 'accepted' :
-					$message = __( 'Successfully accepted!', 'thatcamp-registrations' );
+				case 'approved' :
+					$message = __( 'Successfully approved!', 'thatcamp-registrations' );
 					break;
 
 				case 'pending' :
@@ -236,7 +236,7 @@ class Thatcamp_Registrations_Admin {
 			<div class="alignleft actions">
 				<select name="tcr_bulk_action">
 					<option selected="selected" value=""><?php _e( 'Bulk Actions', 'thatcamp-registrations' ) ?></option>
-					<option value="mark_accepted"><?php _e( 'Mark Accepted', 'thatcamp-registrations' ) ?></option>
+					<option value="mark_approved"><?php _e( 'Mark Approved', 'thatcamp-registrations' ) ?></option>
 					<option value="mark_pending"><?php _e( 'Mark Pending', 'thatcamp-registrations' ) ?></option>
 					<option value="mark_rejected"><?php _e( 'Mark Rejected', 'thatcamp-registrations' ) ?></option>
 					<option value="mark_spam"><?php _e( 'Spam', 'thatcamp-registrations' ) ?></option>
@@ -306,7 +306,7 @@ class Thatcamp_Registrations_Admin {
                 'open_registration'             =>  $_POST['open_registration'],
                 'create_user_accounts'          =>  $_POST['create_user_accounts'],
                 'pending_application_email'     =>  $_POST['pending_application_email'],
-                'accepted_application_email'    =>  $_POST['accepted_application_email'],
+                'approved_application_email'    =>  $_POST['approved_application_email'],
                 'rejected_application_email'    =>  $_POST['rejected_application_email']
                 );
 
@@ -388,9 +388,9 @@ class Thatcamp_Registrations_Admin {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><label for="accepted_application_email"><?php _e('Accepted registration email', 'thatcamp-registrations'); ?></label></th>
+                        <th scope="row"><label for="approved_application_email"><?php _e('Approved registration email', 'thatcamp-registrations'); ?></label></th>
                         <td>
-                            <textarea name="accepted_application_email" id="accepted_application_email" rows="5" cols="50"><?php if( !empty($options['accepted_application_email']) ) echo $options['accepted_application_email']; ?></textarea>
+                            <textarea name="approved_application_email" id="approved_application_email" rows="5" cols="50"><?php if( !empty($options['approved_application_email']) ) echo $options['approved_application_email']; ?></textarea>
                              <p class="description"><?php _e('This e-mail will be sent by the system from an automated account; you may therefore wish to include your own name and e-mail address in the message itself so that users may contact you. The e-mail will be composed in HTML format, so links and e-mail addresses will automatically be hyperlinked, and no additional HTML codes are necessary. If no text is entered, no e-mail will be sent.'); ?></p>
                         </td>
                     </tr>
@@ -427,19 +427,19 @@ class Thatcamp_Registrations_Admin {
 
 		foreach ( $reg_ids as $reg_id ) {
 			switch( $action ) {
-				case 'mark_accepted' :
-					$status = 'accepted';
-					thatcamp_registrations_process_registrations( $reg_ids, $status );
+				case 'mark_approved' :
+					$status = 'approved';
+					thatcamp_registrations_process_registration( $reg_id, $status );
 					break;
 
 				case 'mark_pending' :
 					$status = 'pending';
-					thatcamp_registrations_process_registrations( $reg_ids, $status );
+					thatcamp_registrations_process_registration( $reg_id, $status );
 					break;
 
 				case 'mark_rejected' :
 					$status = 'rejected';
-					thatcamp_registrations_process_registrations( $reg_ids, $status );
+					thatcamp_registrations_process_registration( $reg_id, $status );
 					break;
 
 				case 'mark_spam' :
