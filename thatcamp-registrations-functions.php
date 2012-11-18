@@ -489,10 +489,10 @@ function thatcamp_registrations_send_admin_notification( $reg_id ) {
 		$registration = thatcamp_registrations_get_registrations( array( 'id' => $reg_id ) );
 		if ( ! empty( $registration ) ) {
 			$blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-			$subject  = sprintf( __( 'New application at %s', 'thatcamp-registrations' ), $blogname );
-			$content  = sprintf( __( 'You have received a new application at %1$s. To view this application, visit %2$s', 'thatcamp-registrations' ),
+			$subject  = sprintf( __( 'New registration at %s', 'thatcamp-registrations' ), $blogname );
+			$content  = sprintf( __( 'You have received a new registration at %1$s. To view this registration, visit %2$s', 'thatcamp-registrations' ),
 				$blogname,
-				admin_url( 'page=thatcamp-registrations&id=' . intval( $reg_id ) )
+				admin_url( '?page=thatcamp-registrations&id=' . intval( $reg_id ) )
 			);
 
 			foreach ( $emails as $email ) {
