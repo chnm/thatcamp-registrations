@@ -492,8 +492,6 @@ class Thatcamp_Registrations_Admin {
 			array( 'ukey' => 'user_title', 'title' => 'Title' ),
 			array( 'ukey' => 'user_organization', 'title' => 'Organization' ),
 			array( 'ukey' => 'user_twitter', 'title' => 'Twitter' ),
-			array( 'ukey' => 'tshirt_size', 'title' => 'T-shirt Size' ),
-			array( 'ukey' => 'dietary_preferences', 'title' => 'Dietary Preferences' ),
 			array( 'ukey' => 'application_text', 'title' => 'Application Text' ),
 			array( 'ukey' => 'status', 'title' => 'Status' ),
 		);
