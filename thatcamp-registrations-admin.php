@@ -56,11 +56,20 @@ class Thatcamp_Registrations_Admin {
 
             if (isset($_POST['update_status'])) {
     			thatcamp_registrations_process_registration($_GET['id'], $_POST['status']);
-    			if (isset($_POST['user_account']) && $_POST['user_account'] == 1) {
-    			    thatcamp_registrations_process_user($id);
+
+			// If this is an approval, and if the user_account flag is set to 1,
+			// attempt to create a new WP user (or associate an existing one)
+			// with this registration
+    			if (
+				isset( $_POST['user_account'] ) &&
+				$_POST['user_account'] == 1 &&
+				'accepted' == $_POST['status']
+			   ) {
+				thatcamp_registrations_process_user($id);
     			}
-                wp_redirect( get_admin_url() . 'admin.php?page=thatcamp-registrations&applicant_saved=1' );
-    		}
+
+			wp_redirect( get_admin_url() . 'admin.php?page=thatcamp-registrations&applicant_saved=1' );
+	    }
         }
     ?>
     <style type="text/css" media="screen">
@@ -127,6 +136,7 @@ class Thatcamp_Registrations_Admin {
 
                <form action="admin.php?page=thatcamp-registrations&amp;id=<?php echo $id; ?>&amp;noheader=true" method="post">
                     <h3>Registration Status</h3>
+
                     <select name="status">
                         <option name="pending" id="pending" value="pending"<?php if($registration->status == "pending") { echo ' selected="selected"';} ?>><?php _e('Pending', 'thatcamp-registrations'); ?> </option>
                         <option name="approved" id="approved" value="approved"<?php if($registration->status == "approved") { echo ' selected="selected"';} ?>><?php _e('Approved', 'thatcamp-registrations'); ?> </option>
