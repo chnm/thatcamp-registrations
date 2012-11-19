@@ -62,6 +62,10 @@ class Thatcamp_Registrations_Public_Registration {
 	        if ( $_POST['user_email'] == get_option( 'admin_email' ) ) {
 		    $alerts['user_email'] = __( 'You cannot register using this site\'s admin email address.', 'thatcamp-registrations' );
 		}
+
+		if ( empty( $_POST['description'] ) ) {
+			$alerts['description'] = __( 'You must provide a biography', 'thatcamp-registrations' );
+		}
             }
 
             $userEmail = is_user_logged_in() ? $this->current_user->user_email : @$_POST['user_email'];
