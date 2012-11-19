@@ -104,16 +104,25 @@ function thatcamp_registrations_process_registrations($ids = array(), $status) {
     }
 
     if ($status && !empty($idArray)) {
+	// Update the database entry
         $wpdb->update(
             $table,
             array('status' => $status),
             $idArray
             );
-        if ($status == 'approved' && thatcamp_registrations_create_user_accounts()) {
-            foreach ($ids as $id) {
-                thatcamp_registrations_process_user($id);
-            }
-        }
+
+	// Maybe create/associate WP accounts with the registration
+	if ( thatcamp_registrations_create_user_accounts() ) {
+		if ( $status == 'approved' ) {
+			foreach ($ids as $id) {
+				thatcamp_registrations_process_user($id);
+			}
+		} else if ( $status == 'rejected' ) {
+			foreach ( $ids as $id ) {
+				thatcamp_registrations_maybe_remove_wp_user( $id );
+			}
+		}
+	}
 
         // Notify the user of the change
         if ( 'approved' == $status || 'rejected' == $status ) {
@@ -204,6 +213,21 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
     }
 
     return $userId;
+}
+
+/**
+ * Remove the WP user associated with a registration from the current blog
+ */
+function thatcamp_registrations_maybe_remove_wp_user( $registration_id ) {
+
+	$registration = thatcamp_registrations_get_registration_by_id( $registration_id );
+
+	if ( $registration ) {
+		$userId = $registration->user_id ? $registration->user_id : email_exists($registration->applicant_email);
+		if ( $userId ) {
+			remove_user_from_blog( $userId, get_current_blog_id() );
+		}
+	}
 }
 
 /**
