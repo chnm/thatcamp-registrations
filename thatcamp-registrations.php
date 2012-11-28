@@ -48,20 +48,21 @@ class Thatcamp_Registrations_Loader {
 	function init() {
 		do_action( 'thatcamp_registrations_init' );
 	}
-	
+
 	// Let plugins know that we're done loading
 	function loaded() {
 		do_action( 'thatcamp_registrations_loaded' );
 	}
 
 	function includes() {
+	    require( dirname( __FILE__ ) . '/thatcamp-registrations-profile-fields.php' );
 	    require( dirname( __FILE__ ) . '/thatcamp-registrations-functions.php' );
 	    require( dirname( __FILE__ ) . '/thatcamp-registrations-public-registration.php' );
 		if ( is_admin() ) {
 			require( dirname( __FILE__ ) . '/thatcamp-registrations-admin.php' );
         }
 	}
-	
+
 	// Allow this plugin to be translated by specifying text domain
 	// Todo: Make the logic a bit more complex to allow for custom text within a given language
 	function textdomain() {
