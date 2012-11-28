@@ -83,6 +83,8 @@ function thatcamp_registrations_get_registrations($params = array()) {
         $sql .= " WHERE status = CONVERT( _utf8 '$status' USING latin1 )";
     }
 
+    $sql .= " ORDER BY date ASC ";
+
     // echo $sql; exit;
     $results = $wpdb->get_results($sql, OBJECT);
     return $results;
