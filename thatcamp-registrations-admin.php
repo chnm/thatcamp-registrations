@@ -332,7 +332,7 @@ class Thatcamp_Registrations_Admin {
 
             update_option('thatcamp_registrations_options', $newOptions);
 
-	    $fields = $_POST['fields'];
+	    $fields = isset( $_POST['fields'] ) ? $_POST['fields'] : array();
 	    update_option( 'thatcamp_registrations_selected_fields', $fields );
         }
 
