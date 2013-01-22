@@ -12,7 +12,7 @@ THATCamp Registrations lets you manage event registrations using user accounts i
 
 THATCamp Registrations lets you manage event registrations for The Humanities and Technology Camp using user accounts in WordPress. The plugin is optimized for WordPress multisite, so each event can have its own blog, while users can register across events without create a new user account. 
 
-Visit [THATCamp.oeg](http://thatcamp.org "THATCamp.org") to learn more about THATCamp, The Humanities and Technology Camp.
+Visit [THATCamp.org](http://thatcamp.org "THATCamp.org") to learn more about THATCamp, The Humanities and Technology Camp.
 
 == Installation ==
 
