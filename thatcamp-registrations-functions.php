@@ -330,8 +330,13 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
 	    // Don't allow Administrators to be demoted. See #24
 	    $wp_user = new WP_User( $userId );
 	    if ( ! is_a( $wp_user, 'WP_User' ) || ! in_array( 'administrator', $wp_user->roles ) ) {
-		    add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
-		    thatcamp_registrations_existing_user_welcome_email( $userId );
+		if ( is_multisite() ) {
+			add_existing_user_to_blog(array('user_id' => $userId, 'role' => $role));
+		} else {
+			$wp_user->set_role( $role );
+		}
+
+		thatcamp_registrations_existing_user_welcome_email( $userId );
 	    }
 
         }
@@ -355,7 +360,14 @@ function thatcamp_registrations_process_user($registrationId = null, $role = 'au
             $userInfo['user_email'] = $userEmail;
             $userInfo['user_pass']  = $randomPassword;
             $userId = wp_insert_user( $userInfo );
-            add_user_to_blog($wpdb->blogid, $userId, $role);
+
+	    if ( is_multisite() ) {
+		    add_user_to_blog($wpdb->blogid, $userId, $role);
+	    } else {
+		    $wp_user = new WP_User( $userId );
+		    $wp_user->set_role( $role );
+	    }
+
             thatcamp_registrations_update_user_data($userId, $userInfo);
             wp_new_user_notification($userId, $randomPassword);
         }
