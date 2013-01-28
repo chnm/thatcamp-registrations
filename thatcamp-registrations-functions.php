@@ -412,7 +412,7 @@ function thatcamp_registrations_get_registration_by_id($id)
 {
     global $wpdb;
     $registrations_table = $wpdb->prefix . "thatcamp_registrations";
-    $sql = "SELECT * from " . $registrations_table . " WHERE id = " .$id;
+    $sql = $wpdb->prepare( "SELECT * from " . $registrations_table . " WHERE id = %d", $id );
     return $wpdb->get_row($sql, OBJECT);
 }
 
@@ -424,7 +424,7 @@ function thatcamp_registrations_get_registration_by_applicant_email($applicant_e
 {
     global $wpdb;
     $registrations_table = $wpdb->prefix . "thatcamp_registrations";
-    $sql = "SELECT * from " . $registrations_table . " WHERE applicant_email = '" .$applicant_email ."'";
+    $sql = $wpdb->prepare( "SELECT * from " . $registrations_table . " WHERE applicant_email = %s", $applicant_email );
     return $wpdb->get_row($sql, OBJECT);
 }
 
@@ -438,7 +438,7 @@ function thatcamp_registrations_get_registration_by_user_id($user_id)
 {
     global $wpdb;
     $registrations_table = $wpdb->prefix . "thatcamp_registrations";
-    $sql = "SELECT * from " . $registrations_table . " WHERE user_id = " .$user_id;
+    $sql = $wpdb->prepare( "SELECT * from " . $registrations_table . " WHERE user_id = %d", $user_id );
     return $wpdb->get_row($sql, OBJECT);
 }
 
@@ -451,7 +451,7 @@ function thatcamp_registrations_delete_registration($id)
     global $wpdb;
     $registrations_table = $wpdb->prefix . "thatcamp_registrations";
     if($id) {
-        $wpdb->query("DELETE FROM " . $registrations_table . " WHERE id = '" . $id . "'");
+        $wpdb->query( $wpdb->prepare( "DELETE FROM " . $registrations_table . " WHERE id = %d", $id ) );
     }
 }
 
