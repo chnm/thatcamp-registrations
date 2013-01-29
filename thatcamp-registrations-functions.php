@@ -392,7 +392,12 @@ function thatcamp_registrations_maybe_remove_wp_user( $registration_id ) {
 	if ( $registration ) {
 		$userId = $registration->user_id ? $registration->user_id : email_exists($registration->applicant_email);
 		if ( $userId ) {
-			remove_user_from_blog( $userId, get_current_blog_id() );
+			if ( is_multisite() ) {
+				remove_user_from_blog( $userId, get_current_blog_id() );
+			} else {
+				$user = new WP_User( $userId );
+				$user->set_role( 'subscriber' );
+			}
 		}
 	}
 }
