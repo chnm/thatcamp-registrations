@@ -189,8 +189,14 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     $applicant_info = maybe_serialize($applicant_info);
     $applicant_email = isset($_POST['user_email']) ? $_POST['user_email'] : null;
 
-    if (   $registration = thatcamp_registrations_get_registration_by_user_id($user_id)
-        || $registration = thatcamp_registrations_get_registration_by_applicant_email($applicant_email) ) {
+    // Check for an existing registration
+    $user_exists = false;
+    if ( ( ! is_null( $user_id ) && thatcamp_registrations_get_registration_by_user_id( $user_id ) ) ||
+	   thatcamp_registrations_get_registration_by_applicant_email( $applicant_email ) ) {
+	    $user_exists = true;
+    }
+
+    if ( $user_exists ) {
             return 'You have already submitted your registration.';
     } else {
         $reg_id = $wpdb->insert(
