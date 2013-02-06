@@ -10,9 +10,12 @@ class Thatcamp_Registrations_Public_Registration {
     function thatcamp_registrations_public_registration() {
         add_shortcode('thatcamp-registration', array($this, 'shortcode'));
         $this->options = get_option('thatcamp_registrations_options');
-        $this->current_user = wp_get_current_user();
+	add_action( 'init', array( $this, 'set_up_current_user' ) );
     }
 
+    function set_up_current_user() {
+        $this->current_user = wp_get_current_user();
+    }
 
     function shortcode($attr) {
         if (thatcamp_registrations_option('open_registration') == 1) {
