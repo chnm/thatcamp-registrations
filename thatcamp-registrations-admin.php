@@ -342,6 +342,7 @@ class Thatcamp_Registrations_Admin {
         <div class="wrap">
 
             <h2><?php echo _e('Settings for THATCamp Registrations', 'thatcamp-registrations'); ?></h2>
+            <h3><?php echo _e('To enable registration, create a registration page and type the shortcode [thatcamp-registration] on the page.') ?></h3>
 
             <form action="" method="post">
                 <table class="form-table">
@@ -352,7 +353,7 @@ class Thatcamp_Registrations_Admin {
                                 <option value="0"><?php _e('No'); ?> </option>
                                 <option value="1"<?php if($options['open_registration'] == 1) { echo ' selected="selected"';} ?>><?php _e('Yes'); ?> </option>
                             </select>
-                            <p class="description"><?php _e('Before you open registration, create a page called (for instance) &#8220;Register&#8221; and type &#x5b;thatcamp-registration&#x5d; on that page. When this setting is set to  &#8220;Yes&#8221;, the registration form will be generated on that page. ', 'thatcamp-registrations'); ?></p>
+                            <p class="description"><?php _e('Before you open registration, create a page called (for instance) &#8220;Register&#8221; and type the shortcode &#x5b;thatcamp-registration&#x5d; on the page. When you open registrations, the registration form will be generated on that page. ', 'thatcamp-registrations'); ?></p>
                         </td>
                     </tr>
                     <tr valign="top">
