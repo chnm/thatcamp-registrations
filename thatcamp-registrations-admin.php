@@ -162,9 +162,6 @@ class Thatcamp_Registrations_Admin {
 
                 	<?php if ( ! empty( $registration->additional_information ) ) : echo $registration->additional_information; endif; ?>
 
-                	<h3>Previous THATCamps</h3>
-                	<?php echo $applicant->previous_thatcamps; ?>
-
                 	<h3>Biography</h3>
 		<?php echo $applicant->description; ?>
 
@@ -506,7 +503,6 @@ class Thatcamp_Registrations_Admin {
 			array( 'ukey' => 'last_name', 'title' => 'Last Name' ),
 			array( 'ukey' => 'user_url', 'title' => 'URL' ),
 			array( 'ukey' => 'description', 'title' => 'Description' ),
-			array( 'ukey' => 'previous_thatcamps', 'title' => 'Previous THATCamps' ),
 			array( 'ukey' => 'user_title', 'title' => 'Title' ),
 			array( 'ukey' => 'user_organization', 'title' => 'Organization' ),
 			array( 'ukey' => 'user_twitter', 'title' => 'Twitter' ),

@@ -85,31 +85,6 @@ function thatcamp_registrations_fields( $type = 'limited' ) {
 			),
 		),
 		array(
-			'id'          => 'previous_thatcamps',
-			'name'        => __( 'Number of previous THATCamps attended', 'thatcamp-registrations' ),
-			'explanation' => __( 'How many THATCamps have you been to before?', 'thatcamp-registrations' ),
-			'public'      => false,
-			'type'        => 'select',
-			'options'     => array(
-				array(
-					'value' => '',
-					'text'  => __( 'Select an answer', 'thatcamp-registrations' ),
-				),
-				array(
-					'value' => '0',
-					'text'  => __( '0', 'thatcamp-registrations' ),
-				),
-				array(
-					'value' => '1',
-					'text'  => __( '1', 'thatcamp-registrations' ),
-				),
-				array(
-					'value' => 'More than one',
-					'text'  => __( 'More than one', 'thatcamp-registrations' ),
-				),
-			),
-		),
-		array(
 			'id'          => 'technology_skill_level',
 			'name'        => __( 'Technology Skill Level', 'thatcamp-registrations' ),
 			'explanation' => __( 'I consider my technology skill level to be:', 'thatcamp-registrations' ),
@@ -183,21 +158,6 @@ function thatcamp_registrations_add_registration($status = 'pending') {
     $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : null;
 
     $applicant_info = array();
-
-	// Array of applicant info fields. May set up an option in plugin so admins can modify this list.
-	$applicant_fields = array(
-		'first_name',
-		'last_name',
-		'user_email',
-		'user_url',
-		'description',
-		'previous_thatcamps',
-		'user_title',
-		'user_organization',
-		'user_twitter',
-		'discipline',
-		'technology_skill_level',
-	);
 
 	$applicant_fields = wp_list_pluck( thatcamp_registrations_fields(), 'id' );
 
