@@ -267,15 +267,13 @@ function thatcamp_registrations_process_registrations($ids = array(), $status) {
             );
 
 	// Maybe create/associate WP accounts with the registration
-	if ( thatcamp_registrations_create_user_accounts() ) {
-		if ( $status == 'approved' ) {
-			foreach ($ids as $id) {
-				thatcamp_registrations_process_user($id);
-			}
-		} else if ( $status == 'rejected' ) {
-			foreach ( $ids as $id ) {
-				thatcamp_registrations_maybe_remove_wp_user( $id );
-			}
+	if ( $status == 'approved' ) {
+		foreach ($ids as $id) {
+			thatcamp_registrations_process_user($id);
+		}
+	} else if ( $status == 'rejected' ) {
+		foreach ( $ids as $id ) {
+			thatcamp_registrations_maybe_remove_wp_user( $id );
 		}
 	}
 
@@ -501,10 +499,6 @@ function thatcamp_registrations_options()
 		$options['open_registration'] = 0;
 	}
 
-	if ( empty( $options['create_user_accounts'] ) ) {
-		$options['create_user_accounts'] = 1;
-	}
-
 	// We do an isset check here, because we want to allow for null values
 	if ( ! isset( $options['admin_notify_emails'] ) ) {
 		$options['admin_notify_emails'] = array( get_option( 'admin_email' ) );
@@ -627,16 +621,6 @@ function thatcamp_registrations_existing_user_welcome_email( $user_id ) {
 	}
 
 	return false;
-}
-
-/**
- * Checks the option to create user accounts upon registration approval.
- *
- * @return boolean
- **/
-function thatcamp_registrations_create_user_accounts()
-{
-    return (bool) thatcamp_registrations_option('create_user_accounts');
 }
 
 /**
