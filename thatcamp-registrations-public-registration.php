@@ -62,8 +62,11 @@ class Thatcamp_Registrations_Public_Registration {
                     $alerts['user_email'] = __('You must add an email address.', 'thatcamp-registrations');
                 }
 
-	        if ( $_POST['user_email'] == get_option( 'admin_email' ) ) {
-		    $alerts['user_email'] = __( 'You cannot register using this site\'s admin email address.', 'thatcamp-registrations' );
+		$email = $_POST['user_email'];
+		$the_user = get_user_by( 'email', $email );
+		$is_an_admin = is_a( $the_user, 'WP_User' ) && user_can( $the_user, 'manage_options' );
+	        if ( $is_an_admin ) {
+		    $alerts['user_email'] = __( 'You cannot register the email address of a site administrator.', 'thatcamp-registrations' );
 		}
 
 		if ( empty( $_POST['description'] ) ) {
