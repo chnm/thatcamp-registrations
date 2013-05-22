@@ -109,6 +109,71 @@ function thatcamp_registrations_fields( $type = 'limited' ) {
 				),
 			),
 		),
+		array(
+			'id'          => 'tshirt_size',
+			'name'        => __( 'T-shirt Size', 'thatcamp-registrations' ),
+			'public'      => false,
+			'type'        => 'select',
+			'options'     => array(
+				array(
+					'value' => '',
+					'text'  => __( 'Select a t-shirt size', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_xs',
+					'text'  => __( 'Men\'s XS - Chest 30-32', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_s',
+					'text'  => __( 'Men\'s S - Chest 34-36', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_m',
+					'text'  => __( 'Men\'s M - Chest 38-40', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_l',
+					'text'  => __( 'Men\'s L - Chest 42-44', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_xl',
+					'text'  => __( 'Men\'s XL - Chest 46-48', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_xxl',
+					'text'  => __( 'Men\'s XXL - Chest 50-52', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'mens_xxxl',
+					'text'  => __( 'Men\'s XXXL - Chest 54-55', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'womens_xs',
+					'text'  => __( 'Women\'s XS - Chest 32-33', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'womens_s',
+					'text'  => __( 'Women\'s S - Chest 34-35', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'womens_m',
+					'text'  => __( 'Women\'s M - Chest 36-37', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'womens_l',
+					'text'  => __( 'Women\'s L - Chest 38-40', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'womens_xl',
+					'text'  => __( 'Women\'s XL - Chest 41-44', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'womens_xxl',
+					'text'  => __( 'Women\'s XXL - Chest 45-47', 'thatcamp-registrations' ),
+				),
+			),
+		),
+
 	);
 
 	if ( 'limited' == $type ) {
