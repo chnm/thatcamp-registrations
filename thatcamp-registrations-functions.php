@@ -64,6 +64,27 @@ function thatcamp_registrations_fields( $type = 'limited' ) {
 			'public'      => true,
 		),
 		array(
+			'id'          => 'days_attending',
+			'name'        => __( 'Days Attending', 'thatcamp-registrations' ),
+			'explanation' => __( 'Which days do you plan to attend this THATCamp?', 'thatcamp-registrations' ),
+			'public'      => false,
+			'type'        => 'select',
+			'options'     => array(
+				array(
+					'value' => 'all',
+					'text'  => __( 'All days', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'first-day',
+					'text'  => __( 'First day only', 'thatcamp-registrations' ),
+				),
+				array(
+					'value' => 'second-day',
+					'text'  => __( 'Second day only', 'thatcamp-registrations' ),
+				),
+			),
+		),
+		array(
 			'id'          => 'previous_thatcamps',
 			'name'        => __( 'Number of previous THATCamps attended', 'thatcamp-registrations' ),
 			'explanation' => __( 'How many THATCamps have you been to before?', 'thatcamp-registrations' ),
@@ -163,20 +184,22 @@ function thatcamp_registrations_add_registration($status = 'pending') {
 
     $applicant_info = array();
 
-    // Array of applicant info fields. May set up an option in plugin so admins can modify this list.
-    $applicant_fields = array(
-        'first_name',
-        'last_name',
-        'user_email',
-        'user_url',
-        'description',
-        'previous_thatcamps',
-        'user_title',
-        'user_organization',
-        'user_twitter',
-        'discipline',
-        'technology_skill_level',
-    );
+	// Array of applicant info fields. May set up an option in plugin so admins can modify this list.
+	$applicant_fields = array(
+		'first_name',
+		'last_name',
+		'user_email',
+		'user_url',
+		'description',
+		'previous_thatcamps',
+		'user_title',
+		'user_organization',
+		'user_twitter',
+		'discipline',
+		'technology_skill_level',
+	);
+
+	$applicant_fields = wp_list_pluck( thatcamp_registrations_fields(), 'id' );
 
     foreach ( $applicant_fields as $field) {
         $applicant_info[$field] = isset($_POST[$field]) ? $_POST[$field] : null;

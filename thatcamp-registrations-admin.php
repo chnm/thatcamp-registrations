@@ -186,6 +186,9 @@ class Thatcamp_Registrations_Admin {
 		<h3><?php _e( 'Technology Skill Level', 'thatcamp-registrations' ) ?></h3>
 		<?php echo $applicant->technology_skill_level; ?>
 
+		<h3><?php _e( 'Days Attending', 'thatcamp-registrations' ) ?></h3>
+		<?php echo $applicant->days_attending ?>
+
 </div>
             <?php
             // Otherwise, we need to view the list of registrations.
