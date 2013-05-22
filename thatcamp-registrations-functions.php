@@ -528,9 +528,7 @@ function thatcamp_registrations_options()
 	}
 
 	if ( empty( $options['rejected_application_email'] ) ) {
-		$options['rejected_application_email'] = sprintf( __( 'Sorry, but your registration for %1$s has been rejected. Please contact us at thatcamp.org if you think you have received this message in error.', 'thatcamp-registrations' ),
-			get_option( 'blogname' )
-		);
+		$options['rejected_application_email'] = '';
 	}
 
 	return $options;
