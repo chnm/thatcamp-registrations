@@ -635,8 +635,8 @@ function thatcamp_registrations_send_applicant_email($to, $status = "pending")
             break;
         }
 
-        $subject = $subject . ': '.get_bloginfo('name');
-        wp_mail($to, $subject, $message);
+	$subject = $subject . ': ' . get_bloginfo( 'name' );
+	wp_mail( $to, $subject, stripslashes( $message ) );
 
         return __('Email successfully sent!');
     }
@@ -665,7 +665,7 @@ function thatcamp_registrations_existing_user_welcome_email( $user_id ) {
 		$content .= "\n\r";
 		$content .= sprintf( __( 'Log in: %s', 'thatcamp-registrations' ), wp_login_url() );
 
-		return wp_mail( $user->user_email, $subject, $content );
+		return wp_mail( $user->user_email, $subject, stripslashes( $content ) );
 	}
 
 	return false;
@@ -724,7 +724,7 @@ function thatcamp_registrations_send_admin_notification( $reg_id ) {
 			);
 
 			foreach ( $emails as $email ) {
-				wp_mail( $email, $subject, $content );
+				wp_mail( $email, $subject, stripslashes( $content ) );
 			}
 		}
 	}
