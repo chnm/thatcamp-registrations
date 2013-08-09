@@ -189,6 +189,8 @@ class Thatcamp_Registrations_Admin {
 		<h3><?php _e( 'T-shirt Size', 'thatcamp-registrations' ) ?></h3>
 		<?php echo $applicant->tshirt_size ?>
 
+    <h3><?php _e( 'Children', 'thatcamp-registrations' ) ?></h3>
+    <?php if($children = $applicant->children) { echo $children; } else { echo '0'; } ?>
 </div>
             <?php
             // Otherwise, we need to view the list of registrations.
@@ -515,6 +517,7 @@ class Thatcamp_Registrations_Admin {
 			array( 'ukey' => 'days_attending', 'title' => __( 'Days Attending', 'thatcamp-registrations' ) ),
 			array( 'ukey' => 'application_text', 'title' => 'Application Text' ),
 			array( 'ukey' => 'status', 'title' => 'Status' ),
+      array( 'ukey' => 'children', 'title' => 'Children' ),
 		);
 
 		// Column headers
