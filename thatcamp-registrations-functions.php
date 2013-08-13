@@ -107,7 +107,8 @@ function thatcamp_registrations_fields( $type = 'limited' ) {
 					'value' => 'advanced',
 					'text'  => __( 'Advanced (can code)', 'thatcamp-registrations' ),
 				),
-			),
+      ),
+      'checked'    => false
 		),
 		array(
 			'id'          => 'tshirt_size',
@@ -171,13 +172,15 @@ function thatcamp_registrations_fields( $type = 'limited' ) {
 					'value' => 'womens_xxl',
 					'text'  => __( 'Women\'s XXL - Chest 45-47', 'thatcamp-registrations' ),
 				),
-			),
+      ),
+      'checked'   => false
 		),
 		array(
 			'id'          => 'children',
 			'name'        => __( 'Children', 'thatcamp-registrations' ),
 			'explanation' => __( 'Kids are welcome! Let us know how many you plan to bring.', 'thatcamp-registrations' ),
-			'public'      => false,
+      'public'      => false,
+      'checked'     => false
 		),
 	);
 
@@ -205,7 +208,12 @@ function thatcamp_registrations_selected_fields() {
 	$selected = get_option( 'thatcamp_registrations_selected_fields' );
 
 	if ( '' == $selected ) {
-		$fields = thatcamp_registrations_fields( 'all' );
+    $fields = thatcamp_registrations_fields( 'all' );
+    foreach ($fields as $key => $field) {
+      if($field['checked'] === false) {
+          unset($fields[$key]);
+      }
+    }
 		$selected = wp_list_pluck( $fields, 'id' );
 	}
 
