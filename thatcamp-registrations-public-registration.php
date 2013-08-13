@@ -148,6 +148,7 @@ class Thatcamp_Registrations_Public_Registration {
         }
     }
 
+    if (!empty($fields)):
 		?>
 
 		<fieldset>
@@ -205,6 +206,7 @@ class Thatcamp_Registrations_Public_Registration {
         <!-- Removed t-shirt size and dietary preferences fields. 10/17/2012 AF -->
     </fieldset>
     <?php
+    endif;
     }
 
     function _application_form() {
