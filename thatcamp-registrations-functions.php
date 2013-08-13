@@ -613,11 +613,30 @@ function thatcamp_registrations_get_applicant_info($registration)
         $registrations_table = $wpdb->prefix . "thatcamp_registrations";
         $sql = "SELECT * from " . $registrations_table . " WHERE id = " .$registration->id;
         $record = $wpdb->get_row($sql, OBJECT);
-        if (($record->user_id == 0 || $record->user_id == null) && !empty($record->applicant_info)) {
-            return (object) maybe_unserialize($record->applicant_info);
-        } else {
-            return get_userdata($record->user_id);
+
+        $applicantInfo = array();
+        if (!empty($record->applicant_info)) {
+            $applicantInfo = (array) maybe_unserialize($record->applicant_info);
         }
+
+        if ($userData = get_userdata($record->user_id)) {
+            // Set an array of custom user fields, since they're acquired by magic methods on WP_User.
+            $profileFields = array(
+                'first_name' => $userData->first_name,
+                'last_name' => $userData->last_name,
+                'user_url' => $userData->user_url,
+                'user_twitter' => $userData->user_twitter,
+                'user_title' => $userData->user_title,
+                'user_organization' => $userData->user_organization,
+                'description' => $userData->description,
+                'discipline' => $userData->discipline
+            );
+
+            // Merge applicant info from registration with user data. User data overrides.
+            $applicantInfo = array_merge($applicantInfo, $profileFields);
+        }
+
+        return (object) $applicantInfo;
     }
 }
 
